@@ -7,7 +7,8 @@ Welcome to the GitHub repository for Team 6741R's software for the VEX V5 Roboti
 Team 6741R (name), is a competitive robotics team from Pickerington Ohio participating in the VEX V5 Robotics Competition. We're dedicated to pushing the boundaries of robotics and engineering excellence.
 
 ## Program Structure
-```📁 root
+```
+📁 root
 │
 ├── 📁 include
 │   ├── Autonomous_Manager.h
@@ -30,7 +31,8 @@ Team 6741R (name), is a competitive robotics team from Pickerington Ohio partici
 │   └── HighStakesFieldImage.h
 │
 └── 📁 build
-    └── (generated build files)```
+    └── (generated build files)
+```
 
 ## Contact Us
 
