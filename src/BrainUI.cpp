@@ -4,7 +4,7 @@
 
 using namespace pros;
 
-int selectedAuton;
+int BrainUI::selectedAuton;
 
 // DECLARE LVGL UI OBJECTS
 
