@@ -2,10 +2,9 @@
 #include "BrainUI.h"
 #include "HighStakesFieldImage.h"
 
-
 using namespace pros;
 
-    // DECLARE LVGL UI OBJECTS //
+// DECLARE LVGL UI OBJECTS
 
 // Initializes autonomous buttons and their corrosponding labels
 lv_obj_t * leftSideBlueButton; lv_obj_t * rightSideBlueButton;

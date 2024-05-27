@@ -4,7 +4,6 @@
 Autonomous_Manager::Autonomous_Manager(Robot& robot) : robot(robot) {}
 
 // Autonomous routines
-
 void Autonomous_Manager::BlueMatchLeft() {
 
     // Example

@@ -75,8 +75,11 @@ bin/main.cpp.o: src/main.cpp include/main.h include/api.h \
  include/pros/rtos.hpp include/pros/rtos.h include/pros/optical.hpp \
  include/pros/optical.h include/pros/rotation.hpp include/pros/rotation.h \
  include/pros/rtos.hpp include/pros/screen.hpp include/pros/screen.h \
- include/pros/vision.hpp include/pros/vision.h include/pros/apix.h \
- include/api.h include/pros/serial.h include/pros/serial.hpp \
+ include/pros/vision.hpp include/pros/vision.h include/BrainUI.h \
+ include/pros/apix.h include/api.h include/pros/serial.h \
+ include/pros/serial.hpp include/Robot.h include/Lift_Control.h \
+ include/Mogo_Clamp.h include/Intake_Control.h \
+ include/Autonomous_Manager.h include/Robot_Config.h \
  include/lemlib/api.hpp include/lemlib/pid.hpp include/lemlib/pose.hpp \
  include/lemlib/util.hpp include/lemlib/chassis/chassis.hpp \
  include/pros/motors.hpp include/pros/imu.hpp include/lemlib/asset.hpp \
@@ -87,8 +90,7 @@ bin/main.cpp.o: src/main.cpp include/main.h include/api.h \
  include/fmt/format-inl.h include/lemlib/logger/baseSink.hpp \
  include/fmt/args.h include/lemlib/logger/message.hpp \
  include/lemlib/logger/infoSink.hpp \
- include/lemlib/logger/telemetrySink.hpp include/BrainUI.h \
- include/pros/apix.h
+ include/lemlib/logger/telemetrySink.hpp
 include/main.h:
 include/api.h:
 include/pros/adi.h:
@@ -242,10 +244,17 @@ include/pros/screen.hpp:
 include/pros/screen.h:
 include/pros/vision.hpp:
 include/pros/vision.h:
+include/BrainUI.h:
 include/pros/apix.h:
 include/api.h:
 include/pros/serial.h:
 include/pros/serial.hpp:
+include/Robot.h:
+include/Lift_Control.h:
+include/Mogo_Clamp.h:
+include/Intake_Control.h:
+include/Autonomous_Manager.h:
+include/Robot_Config.h:
 include/lemlib/api.hpp:
 include/lemlib/pid.hpp:
 include/lemlib/pose.hpp:
@@ -269,5 +278,3 @@ include/fmt/args.h:
 include/lemlib/logger/message.hpp:
 include/lemlib/logger/infoSink.hpp:
 include/lemlib/logger/telemetrySink.hpp:
-include/BrainUI.h:
-include/pros/apix.h:
