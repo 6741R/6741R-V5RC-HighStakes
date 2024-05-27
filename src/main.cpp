@@ -22,18 +22,35 @@ BrainUI ui;
 Controller master(pros::E_CONTROLLER_MASTER);
 
 // Runs when robot is disabled by field controller
-void disabled() {
-
-}
+void disabled() {}
 
 // Runs when initialized by field controller
 void competition_initialize() {
-
+	// Draws autonomous selector UI using LVGL
+	ui.DisplayAutonSelectorUI();
 }
 
 // Runs autonomous period
 void autonomous() {
 
+	// Autonomous selector logic, grabs selected auton from BrainUI class
+	switch(ui.selectedAuton) {
+		case 0:
+			autonManager.BlueMatchLeft();
+			break;
+		case 1:
+			autonManager.BlueMatchRight();
+			break;
+		case 2:
+			autonManager.RedMatchLeft();
+			break;
+		case 3:
+			autonManager.RedMatchRight();
+			break;
+		case 4: // Runs skills auton by default
+			autonManager.Skills();
+			break;
+	}
 }
 
 // Driver control handling drivetrain
@@ -79,9 +96,7 @@ void LiftDriverControl() {
 void IntakeDriverControl() {
 
 	// Intakes with R1, outtakies with R2
-
-	if (master.get_digital(E_CONTROLLER_DIGITAL_R1))
-	{
+	if (master.get_digital(E_CONTROLLER_DIGITAL_R1)) {
 		robot.intake.Intake(100);
 		//c::motor_move(13, 127);
 	} else if (master.get_digital(E_CONTROLLER_DIGITAL_R2)) {

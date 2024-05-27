@@ -9,6 +9,7 @@ class BrainUI {
     public:
         static lv_res_t btn_click_action(lv_obj_t*);
         void DisplayAutonSelectorUI();
+        int selectedAuton;
 };
 
 #endif

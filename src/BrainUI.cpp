@@ -4,6 +4,8 @@
 
 using namespace pros;
 
+int selectedAuton;
+
 // DECLARE LVGL UI OBJECTS
 
 // Initializes autonomous buttons and their corrosponding labels
@@ -28,23 +30,29 @@ lv_res_t BrainUI::btn_click_action(lv_obj_t * btn) {
 	switch(id) {
 		case 0:
 			lv_label_set_text(selectedAutonLabel, "Blue Alliance Left");
+			selectedAuton = 0;
 			break;
 		case 1:
 			lv_label_set_text(selectedAutonLabel, "Blue Alliance Right");
+			selectedAuton = 1;
 			break;
 		case 2:
 			lv_label_set_text(selectedAutonLabel, "Red Alliance Left");
+			selectedAuton = 2;
 			break;
 		case 3:
 			lv_label_set_text(selectedAutonLabel, "Red Alliance Right");
-			break;
-		case 4:
+			selectedAuton = 3;
 			break;
 	}
 	return LV_RES_OK;
 }
 
 void BrainUI::DisplayAutonSelectorUI() {
+
+	lv_label_set_text(selectedAutonLabel, "Skills Autonomous");
+	selectedAuton = 4;
+
 	// Draw field on brain
 	lv_obj_t * img = lv_img_create(lv_scr_act(), NULL);
 	lv_img_set_src(img, &HighStakesFieldImage);
