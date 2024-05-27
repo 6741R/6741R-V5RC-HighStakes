@@ -4,6 +4,7 @@
 // References global robot configuration
 extern Robot_Config robotDevices;
 
+// Stops and holds the lift
 void Lift_Control::StopLift() {
     robotDevices.liftMotor.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
     robotDevices.liftMotor.move_velocity(0);
