@@ -40,12 +40,12 @@ Robot_Config::Robot_Config() :
     // DRIVETRAIN MOTORS
 
         // Motors comprising the left half of the Drivetrain
-        frontLeftMotor (-1, E_MOTOR_GEAR_BLUE),
+        frontLeftMotor (1, E_MOTOR_GEAR_BLUE),
         lowerLeftMotor (-2, E_MOTOR_GEAR_BLUE),
-        upperLeftMotor (-3, E_MOTOR_GEAR_BLUE),
+        upperLeftMotor (3, E_MOTOR_GEAR_BLUE),
 
         // Motors comprising the right half of the Drivetrain
-        frontRightMotor (4, E_MOTOR_GEAR_BLUE),
+        frontRightMotor (-4, E_MOTOR_GEAR_BLUE),
         lowerRightMotor (5, E_MOTOR_GEAR_BLUE),
         upperRightMotor (6, E_MOTOR_GEAR_BLUE),
 
