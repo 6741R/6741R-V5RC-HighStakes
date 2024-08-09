@@ -56,8 +56,8 @@ void autonomous() {
 // Driver control handling drivetrain
 void DrivetrainDriverControl() {
 		// Tank Control
-		int rightY = master.get_analog(E_CONTROLLER_ANALOG_LEFT_Y);
-		int leftY = master.get_analog(E_CONTROLLER_ANALOG_RIGHT_Y);
+		int rightY = master.get_analog(E_CONTROLLER_ANALOG_RIGHT_Y);
+		int leftY = master.get_analog(E_CONTROLLER_ANALOG_LEFT_Y);
 		robotDevices.chassis.tank(-leftY, rightY); // Uses lemlibs tank control method
 }
 
@@ -98,14 +98,14 @@ void IntakeDriverControl() {
 	// Intakes with R1, outtakies with R2
 	if (master.get_digital(E_CONTROLLER_DIGITAL_R1)) {
 		//robot.intake.Intake(100);
-		c::motor_move(13, 127);
+		c::motor_move(8, 127);
 	} else if (master.get_digital(E_CONTROLLER_DIGITAL_R2)) {
 		robot.intake.Outtake(100);
-		c::motor_move(13, -127);
+		c::motor_move(8, -127);
 	} else {
 		//robot.intake.StopIntake();
 		c::motor_set_brake_mode(12, E_MOTOR_BRAKE_HOLD);
-		c::motor_brake(13);
+		c::motor_brake(8);
 	}
 }
 
