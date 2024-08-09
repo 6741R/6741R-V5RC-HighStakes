@@ -1,4 +1,5 @@
 #include "Robot_Config.h"
+
 using namespace pros;
 
 // Constructor for global device configuration
