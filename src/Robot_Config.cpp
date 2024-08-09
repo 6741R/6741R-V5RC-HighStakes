@@ -35,19 +35,19 @@ Robot_Config::Robot_Config() :
     // SUBSYSTEM MOTORS
 
         liftMotor(12, E_MOTOR_GEAR_GREEN),
-        intakeMotor(13, E_MOTOR_GEAR_GREEN),
+        intakeMotor(8, E_MOTOR_GEAR_GREEN),
 
     // DRIVETRAIN MOTORS
 
         // Motors comprising the left half of the Drivetrain
-        frontLeftMotor (1, E_MOTOR_GEAR_BLUE),
-        lowerLeftMotor (-2, E_MOTOR_GEAR_BLUE),
-        upperLeftMotor (3, E_MOTOR_GEAR_BLUE), //op
+        frontLeftMotor (19, E_MOTOR_GEAR_BLUE),
+        lowerLeftMotor (-9, E_MOTOR_GEAR_BLUE),
+        upperLeftMotor (10, E_MOTOR_GEAR_BLUE), //op
 
         // Motors comprising the right half of the Drivetrain
-        frontRightMotor (-4, E_MOTOR_GEAR_BLUE),
-        lowerRightMotor (5, E_MOTOR_GEAR_BLUE),
-        upperRightMotor (6, E_MOTOR_GEAR_BLUE),
+        frontRightMotor (-6, E_MOTOR_GEAR_BLUE),
+        lowerRightMotor (20, E_MOTOR_GEAR_BLUE),
+        upperRightMotor (19, E_MOTOR_GEAR_BLUE),
 
         // Drivetrain motorgroups
         leftMotors ({frontLeftMotor, lowerLeftMotor, upperLeftMotor}),
