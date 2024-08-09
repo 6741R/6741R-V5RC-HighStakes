@@ -42,7 +42,7 @@ Robot_Config::Robot_Config() :
         // Motors comprising the left half of the Drivetrain
         frontLeftMotor (1, E_MOTOR_GEAR_BLUE),
         lowerLeftMotor (-2, E_MOTOR_GEAR_BLUE),
-        upperLeftMotor (3, E_MOTOR_GEAR_BLUE),
+        upperLeftMotor (3, E_MOTOR_GEAR_BLUE), //op
 
         // Motors comprising the right half of the Drivetrain
         frontRightMotor (-4, E_MOTOR_GEAR_BLUE),
