@@ -56,8 +56,8 @@ void autonomous() {
 // Driver control handling drivetrain
 void DrivetrainDriverControl() {
 		// Tank Control
-		int rightY = master.get_analog(E_CONTROLLER_ANALOG_RIGHT_Y);
-		int leftY = master.get_analog(E_CONTROLLER_ANALOG_LEFT_Y);
+		int rightY = master.get_analog(E_CONTROLLER_ANALOG_LEFT_Y);
+		int leftY = master.get_analog(E_CONTROLLER_ANALOG_RIGHT_Y);
 		robotDevices.chassis.tank(-leftY, rightY); // Uses lemlibs tank control method
 }
 

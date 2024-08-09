@@ -1,5 +1,4 @@
 #include "Robot_Config.h"
-
 using namespace pros;
 
 // Constructor for global device configuration
@@ -41,14 +40,14 @@ Robot_Config::Robot_Config() :
     // DRIVETRAIN MOTORS
 
         // Motors comprising the left half of the Drivetrain
-        frontLeftMotor (19, E_MOTOR_GEAR_BLUE),
-        lowerLeftMotor (-9, E_MOTOR_GEAR_BLUE),
-        upperLeftMotor (10, E_MOTOR_GEAR_BLUE), //op
+        frontLeftMotor (6, E_MOTOR_GEAR_BLUE),
+        lowerLeftMotor (-19, E_MOTOR_GEAR_BLUE),
+        upperLeftMotor (20, E_MOTOR_GEAR_BLUE), //op
 
         // Motors comprising the right half of the Drivetrain
-        frontRightMotor (-6, E_MOTOR_GEAR_BLUE),
-        lowerRightMotor (20, E_MOTOR_GEAR_BLUE),
-        upperRightMotor (19, E_MOTOR_GEAR_BLUE),
+        frontRightMotor (7, E_MOTOR_GEAR_BLUE),
+        lowerRightMotor (-9, E_MOTOR_GEAR_BLUE),
+        upperRightMotor (10, E_MOTOR_GEAR_BLUE),
 
         // Drivetrain motorgroups
         leftMotors ({frontLeftMotor, lowerLeftMotor, upperLeftMotor}),
