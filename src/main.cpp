@@ -116,7 +116,7 @@ void opcontrol() {
 		MogoClampDriverControl();
 		LiftDriverControl();
 		IntakeDriverControl();
-
+		master.print(0, 0, "test");
 		delay(25);
 	}
 }
