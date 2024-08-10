@@ -7,7 +7,7 @@ Autonomous_Manager::Autonomous_Manager(Robot& robot) : robot(robot) {}
 void Autonomous_Manager::BlueMatchLeft() {
 
     // Example
-    robot.lift.LowerLift();
+    robot.intake.Intake(127);
 }
 
 void Autonomous_Manager::BlueMatchRight() {

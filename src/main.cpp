@@ -116,7 +116,7 @@ void opcontrol() {
 		MogoClampDriverControl();
 		LiftDriverControl();
 		IntakeDriverControl();
-		master.print(0, 0, "opcontrol is running");
+		master.print(0, 0, "WIN THIS MATCH FOR JESUS");
 		delay(25);
 	}
 }
