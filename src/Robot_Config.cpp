@@ -34,8 +34,8 @@ Robot_Config::Robot_Config() :
 
     // SUBSYSTEM MOTORS
 
-        liftMotor(12, E_MOTOR_GEAR_GREEN),
-        intakeMotor(8, E_MOTOR_GEAR_GREEN),
+        liftMotor(12, E_MOTOR_GEAR_BLUE),
+        intakeMotor(8, E_MOTOR_GEAR_BLUE),
 
     // DRIVETRAIN MOTORS
 
