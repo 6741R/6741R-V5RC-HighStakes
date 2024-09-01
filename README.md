@@ -4,7 +4,7 @@ This is the repository containing Team 6741R's software for the VEX V5 Robotics 
 
 ## About Us
 
-Team 6741R (name), is a competitive robotics team from Pickerington Ohio participating in the VEX V5 Robotics Competition. We're dedicated to pushing the boundaries of robotics and engineering excellence.
+Team 6741R Redacted, is a competitive robotics team from Pickerington Ohio participating in the VEX V5 Robotics Competition. We're dedicated to pushing the boundaries of robotics and engineering excellence.
 
 ## Program Structure
 ```
