@@ -1,32 +1,48 @@
 #include "pros/apix.h"
-#include "BrainUI.h"
-#include "HighStakesFieldImage.h"
+#include "Brain_UI.h"
+
+// Imports the image data for the field jpeg.
+#include "High_Stakes_Field_Image.h"
 
 using namespace pros;
 
-int BrainUI::selectedAuton;
+// Holds the selected autonomous mode.
+int Brain_UI::selectedAuton;
 
-// DECLARE LVGL UI OBJECTS
-
-// Initializes autonomous buttons and their corrosponding labels
-lv_obj_t * leftSideBlueButton; lv_obj_t * rightSideBlueButton;
-lv_obj_t * leftSideRedButton; lv_obj_t * rightSideRedButton;
-lv_obj_t * leftSideBlueButtonLabel; lv_obj_t * rightSideBlueButtonLabel;
-lv_obj_t * leftSideRedButtonLabel; lv_obj_t * rightSideRedButtonLabel;
+// Initialize autonomous buttons and their corresponding labels.
+lv_obj_t * leftSideBlueButton; 
+lv_obj_t * rightSideBlueButton;
+lv_obj_t * leftSideRedButton; 
+lv_obj_t * rightSideRedButton;
+lv_obj_t * leftSideBlueButtonLabel; 
+lv_obj_t * rightSideBlueButtonLabel;
+lv_obj_t * leftSideRedButtonLabel; 
+lv_obj_t * rightSideRedButtonLabel;
 lv_obj_t * selectedAutonLabel;
 
-// Initializes the LVGL styles per button
+// Initialize the LVGL styles for each button
 lv_style_t redAutoButtonStyle;
 lv_style_t blueAutoButtonStyle;
 lv_style_t buttonPressedStyle;
 
-// Initializes image object
+// Initialize image object
 LV_IMG_DECLARE(HighStakesFieldImage);
 
-// UI Button press callback
-lv_res_t BrainUI::btn_click_action(lv_obj_t * btn) {
+/**
+ * @brief Callback function for handling button presses.
+ * 
+ * This function is triggered when any of the autonomous selection buttons 
+ * are pressed. It updates the `selectedAutonLabel` text based on the button 
+ * pressed and sets the corresponding autonomous mode.
+ * 
+ * @param btn The LVGL object (button) that was clicked.
+ * @return LV_RES_OK to indicate the event was handled successfully.
+ */
+lv_res_t Brain_UI::btn_click_action(lv_obj_t * btn) {
+    // Retrieve the button ID
 	uint8_t id = lv_obj_get_free_num(btn);
 	
+    // Set the autonomous mode and update label based on the button ID
 	switch(id) {
 		case 0:
 			lv_label_set_text(selectedAutonLabel, "Blue Alliance Left");
@@ -48,36 +64,44 @@ lv_res_t BrainUI::btn_click_action(lv_obj_t * btn) {
 	return LV_RES_OK;
 }
 
-void BrainUI::DisplayAutonSelectorUI() {
+/**
+ * @brief Displays the autonomous selector UI on the brain screen.
+ * 
+ * This function creates and configures the UI elements for selecting 
+ * the autonomous mode, including buttons for each option and a label 
+ * to display the selected mode. It also displays the field image.
+ */
+void Brain_UI::DisplayAutonSelectorUI() {
 
+    // Set default autonomous mode and update label
 	lv_label_set_text(selectedAutonLabel, "Skills Autonomous");
 	selectedAuton = 4;
 
-	// Draw field on brain
+	// Draw field image on the brain screen
 	lv_obj_t * img = lv_img_create(lv_scr_act(), NULL);
 	lv_img_set_src(img, &HighStakesFieldImage);
-	lv_obj_align(img, NULL, LV_ALIGN_CENTER,0,0);
+	lv_obj_align(img, NULL, LV_ALIGN_CENTER, 0, 0);
 
 	// Set red side auto button appearance
 	lv_style_copy(&redAutoButtonStyle, &lv_style_plain);
 		redAutoButtonStyle.body.main_color = LV_COLOR_MAKE(200, 0, 0);
 		redAutoButtonStyle.body.grad_color = LV_COLOR_MAKE(100, 0, 0);
 		redAutoButtonStyle.body.radius = 0;
-		redAutoButtonStyle.text.color = LV_COLOR_MAKE(255,255,255);
+		redAutoButtonStyle.text.color = LV_COLOR_MAKE(255, 255, 255);
 
 	// Set blue side auto button appearance
 	lv_style_copy(&blueAutoButtonStyle, &lv_style_plain);
 		blueAutoButtonStyle.body.main_color = LV_COLOR_MAKE(0, 0, 200);
 		blueAutoButtonStyle.body.grad_color = LV_COLOR_MAKE(0, 0, 100);
 		blueAutoButtonStyle.body.radius = 0;
-		blueAutoButtonStyle.text.color = LV_COLOR_MAKE(255,255,255);
+		blueAutoButtonStyle.text.color = LV_COLOR_MAKE(255, 255, 255);
 
 	// Set pressed button appearance
 	lv_style_copy(&buttonPressedStyle, &lv_style_plain);
 		buttonPressedStyle.body.main_color = LV_COLOR_MAKE(255, 255, 255);
 		buttonPressedStyle.body.grad_color = LV_COLOR_MAKE(255, 255, 255);
 		buttonPressedStyle.body.radius = 0;
-		buttonPressedStyle.text.color = LV_COLOR_MAKE(255,255,255);
+		buttonPressedStyle.text.color = LV_COLOR_MAKE(255, 255, 255);
 
 	// Create Left Blue Auto button
 	leftSideBlueButton = lv_btn_create(lv_scr_act(), NULL);
@@ -89,6 +113,7 @@ void BrainUI::DisplayAutonSelectorUI() {
 		lv_obj_align(leftSideBlueButton, NULL, LV_ALIGN_IN_TOP_LEFT, 10, 10);
 		leftSideBlueButtonLabel = lv_label_create(leftSideBlueButton, NULL);
 		lv_label_set_text(leftSideBlueButtonLabel, "Left Blue");
+
 	// Create Right Blue Auto button
 	rightSideBlueButton = lv_btn_create(lv_scr_act(), NULL);
 		lv_obj_set_free_num(rightSideBlueButton, 1);
@@ -99,6 +124,7 @@ void BrainUI::DisplayAutonSelectorUI() {
 		lv_obj_align(rightSideBlueButton, NULL, LV_ALIGN_IN_BOTTOM_LEFT, 10, -10);
 		rightSideBlueButtonLabel = lv_label_create(rightSideBlueButton, NULL);
 		lv_label_set_text(rightSideBlueButtonLabel, "Right Blue");
+
 	// Create Left Red Auto button
 	leftSideRedButton = lv_btn_create(lv_scr_act(), NULL);
 		lv_obj_set_free_num(leftSideRedButton, 2);
@@ -109,6 +135,7 @@ void BrainUI::DisplayAutonSelectorUI() {
 		lv_obj_align(leftSideRedButton, NULL, LV_ALIGN_IN_BOTTOM_RIGHT, -10, -10);
 		leftSideRedButtonLabel = lv_label_create(leftSideRedButton, NULL);
 		lv_label_set_text(leftSideRedButtonLabel, "Left Red");
+
 	// Create Right Red Auto button
 	rightSideRedButton = lv_btn_create(lv_scr_act(), NULL);
 		lv_obj_set_free_num(rightSideRedButton, 3);
@@ -120,6 +147,7 @@ void BrainUI::DisplayAutonSelectorUI() {
 		rightSideRedButtonLabel = lv_label_create(rightSideRedButton, NULL);
 		lv_label_set_text(rightSideRedButtonLabel, "Right Red");
 
+    // Create label to display selected autonomous mode
 	selectedAutonLabel = lv_label_create(lv_scr_act(), NULL);
 	lv_label_set_text(selectedAutonLabel, "Button not clicked yet");
 	lv_obj_align(selectedAutonLabel, NULL, LV_ALIGN_IN_TOP_MID, 10, 0);
