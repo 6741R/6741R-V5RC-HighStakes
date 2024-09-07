@@ -25,12 +25,12 @@ Robot_Config::Robot_Config() :
     // V5 SENSORS
 
         // Inertial sensor
-        imu(10),
+        imu(14),
 
         // Rotation sensors for odometry
-        trackingPodLeft(11),
-        trackingPodRight(12),
-        trackingPodBack(13),
+        trackingPodLeft(15, true),
+        trackingPodRight(1, true),
+        trackingPodBack(4, true),
 
     // SUBSYSTEM MOTORS
 
@@ -40,56 +40,57 @@ Robot_Config::Robot_Config() :
     // DRIVETRAIN MOTORS
 
         // Motors comprising the left half of the Drivetrain when looking from the front
-        frontLeftMotor (-8, E_MOTOR_GEAR_BLUE),
-        lowerLeftMotor (-10, E_MOTOR_GEAR_BLUE),
-        upperLeftMotor (9, E_MOTOR_GEAR_BLUE), //op
+        frontRightMotor (8, E_MOTOR_GEAR_BLUE),
+        lowerRightMotor (10, E_MOTOR_GEAR_BLUE),
+        upperRightMotor (-9, E_MOTOR_GEAR_BLUE), 
 
         // Motors comprising the right half of the Drivetrain when looking from the front
-        frontRightMotor (-17, E_MOTOR_GEAR_BLUE),
-        lowerRightMotor (-19, E_MOTOR_GEAR_BLUE),
-        upperRightMotor (18, E_MOTOR_GEAR_BLUE),
+        frontLeftMotor (-17, E_MOTOR_GEAR_BLUE),
+        lowerLeftMotor (-19, E_MOTOR_GEAR_BLUE),
+        upperLeftMotor (18, E_MOTOR_GEAR_BLUE),
 
         // Drivetrain motorgroups
         leftMotors ({frontLeftMotor, lowerLeftMotor, upperLeftMotor}),
         rightMotors ({frontRightMotor, lowerRightMotor, upperRightMotor}),
 
         // Initialization of the Drivetrain object
-        drivetrain(&leftMotors, &rightMotors, 10, lemlib::Omniwheel::NEW_325, 480, 2),
+        drivetrain(&leftMotors, &rightMotors, 13, lemlib::Omniwheel::NEW_325, 480, 2),
 
     // ODOMETRY OBJECTS
 
         // Tracking wheel objects
-        vertTrackingWheelLeft(&trackingPodLeft, lemlib::Omniwheel::NEW_325, 1, 0.8),
-        vertTrackingWheelRight(&trackingPodRight, lemlib::Omniwheel::NEW_325, 1, 0.8),
-        horTrackingWheel(&trackingPodBack, lemlib::Omniwheel::NEW_325, 1, 0.8),
+        vertTrackingWheelLeft(&trackingPodLeft, lemlib::Omniwheel::NEW_325, -6.45),
+        vertTrackingWheelRight(&trackingPodRight, lemlib::Omniwheel::NEW_325, 6.45),
+        horTrackingWheel(&trackingPodBack, lemlib::Omniwheel::NEW_275, 1.75),
 
         // Odometry sensors object
+
         sensors(&vertTrackingWheelLeft, &vertTrackingWheelRight, &horTrackingWheel, nullptr, &imu),
 
     // PID CONSTRUCTORS
 
         // Lateral PID controller constructor
-        lateralController(10, // proportional gain (kP)
+        lateralController(6, // proportional gain (kP)
                         0, // integral gain (kI)
-                        3, // derivative gain (kD)
-                        3, // anti windup
-                        1, // small error range, in inches
-                        100, // small error range timeout, in milliseconds
-                        3, // large error range, in inches
-                        500, // large error range timeout, in milliseconds
-                        20 // maximum acceleration (slew)
+                        0.5, // derivative gain (kD)
+                                              3, // anti windup
+                                              1, // small error range, in inches
+                                              100, // small error range timeout, in milliseconds
+                                              3, // large error range, in inches
+                                              500, // large error range timeout, in milliseconds
+                                              20 // maximum acceleration (slew)
         ),
 
         // Angular PID controller constructor
-        angularController(2, // proportional gain (kP)
-                        0, // integral gain (kI)
-                        10, // derivative gain (kD)
-                        3, // anti windup
-                        1, // small error range, in degrees
-                        100, // small error range timeout, in milliseconds
-                        3, // large error range, in degrees
-                        500, // large error range timeout, in milliseconds
-                        0 // maximum acceleration (slew)
+        angularController(1.05, // proportional gain (kP)
+                                              0, // integral gain (kI)
+                                              0.25, // derivative gain (kD)
+                                              3, // anti windup
+                                              1, // small error range, in inches
+                                              100, // small error range timeout, in milliseconds
+                                              3, // large error range, in inches
+                                              500, // large error range timeout, in milliseconds
+                                              0 // maximum acceleration (slew)
         ),
 
     // OTHER STUFF

@@ -26,6 +26,10 @@ Brain_UI ui;
 /*** @brief Represents the master controller used to operate the robot. */
 Controller master(pros::E_CONTROLLER_MASTER);
 
+/*** @brief Load paths. */
+ASSET(testPath3_txt);
+
+
 /**
  * @brief Runs when robot is disabled by VEX Field Controller.
  */
@@ -33,24 +37,42 @@ void disabled() {
 	// Placeholder
 }
 
+
 /**
  * @brief Runs when initialized by VEX Field Controller.
  */
 void competition_initialize() {
 
+	robotDevices.frontLeftMotor.set_brake_mode(E_MOTOR_BRAKE_COAST);
+	robotDevices.frontRightMotor.set_brake_mode(E_MOTOR_BRAKE_COAST);
+	robotDevices.upperLeftMotor.set_brake_mode(E_MOTOR_BRAKE_COAST);
+	robotDevices.lowerLeftMotor.set_brake_mode(E_MOTOR_BRAKE_COAST);
+	robotDevices.upperRightMotor.set_brake_mode(E_MOTOR_BRAKE_COAST);
+	robotDevices.lowerRightMotor.set_brake_mode(E_MOTOR_BRAKE_COAST);
+
 	// Draws autonomous selector UI on the Brain using LVGL,
 	// an industry standard micro-controller screen UI library.
-	ui.DisplayAutonSelectorUI();
+	//ui.DisplayAutonSelectorUI();
 }
 
 /**
  * @brief Runs Autonomous period functions.
  */
 void autonomous() {
+    // Calibrate sensors
+    robotDevices.chassis.calibrate(); // calibrate sensors
+    while (robotDevices.imu.is_calibrating()) {
+        pros::delay(10);
+    }
 
+    // Set initial position to x:0, y:0, heading:0
+    robotDevices.chassis.setPose(-12, -12, 90);
+
+    robotDevices.chassis.follow(testPath3_txt, 7, 15000);
+
+	/*
 	// Retrieve the selected autonomous mode from the BrainUI.
 	int selectedMode = ui.selectedAuton;
-
 	// Determine which autonomous routine to execute based on the selected mode.
 	switch(selectedMode) {
 		case 0:
@@ -74,6 +96,7 @@ void autonomous() {
 			autonManager.Skills();
 			break;
 	}
+	*/
 }
 
 /**
@@ -88,14 +111,14 @@ void DrivetrainDriverControl() {
 	// Read the Y-axis values from the controller's analog sticks.
 	// rightY controls the right side of the drivetrain.
 	// leftY controls the left side of the drivetrain.
-	int rightY = master.get_analog(E_CONTROLLER_ANALOG_LEFT_Y);
-	int leftY = master.get_analog(E_CONTROLLER_ANALOG_RIGHT_Y);
+	int rightY = master.get_analog(E_CONTROLLER_ANALOG_RIGHT_Y);
+	int leftY = master.get_analog(E_CONTROLLER_ANALOG_LEFT_Y);
 
 	// Apply tank drive control to the drivetrain.
 	// The tank method from lemlibs takes two arguments:
 	// The first argument is the power for the left side (negative of leftY to match joystick direction).
 	// The second argument is the power for the right side (rightY directly from joystick).
-	robotDevices.chassis.tank(-leftY, rightY);
+	robotDevices.chassis.tank(leftY, rightY);
 }
 
 /**
@@ -181,7 +204,25 @@ void IntakeDriverControl() {
  * It handles the control of the drivetrain, mobile goal clamp, lift, and intake systems.
  */
 void opcontrol() {
+	
+    pros::lcd::initialize(); // initialize brain screen
+    robotDevices.chassis.calibrate(); // calibrate sensors
+	while (robotDevices.imu.is_calibrating()) {
+		pros::delay(10);
+	}
 
+    // print position to brain screen
+    pros::Task screen_task([&]() {
+        while (true) {
+            // print robot location to the brain screen
+            pros::lcd::print(0, "X: %f", robotDevices.chassis.getPose().x); // x
+            pros::lcd::print(1, "Y: %f", robotDevices.chassis.getPose().y); // y
+            pros::lcd::print(2, "Theta: %f", robotDevices.chassis.getPose().theta); // heading
+            // delay to save resources
+            pros::delay(20);
+        }
+    });
+	
 	// Infinite loop to continuously run operator control tasks.
 	while (true) {
 

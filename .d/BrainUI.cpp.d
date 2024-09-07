@@ -76,8 +76,8 @@ bin/BrainUI.cpp.o: src/BrainUI.cpp include/pros/apix.h include/api.h \
  include/pros/optical.h include/pros/rotation.hpp include/pros/rotation.h \
  include/pros/rtos.hpp include/pros/screen.hpp include/pros/screen.h \
  include/pros/vision.hpp include/pros/vision.h include/pros/serial.h \
- include/pros/serial.hpp include/BrainUI.h include/api.h \
- include/pros/apix.h include/HighStakesFieldImage.h
+ include/pros/serial.hpp include/Brain_UI.h include/api.h \
+ include/pros/apix.h include/High_Stakes_Field_Image.h
 include/pros/apix.h:
 include/api.h:
 include/pros/adi.h:
@@ -233,7 +233,7 @@ include/pros/vision.hpp:
 include/pros/vision.h:
 include/pros/serial.h:
 include/pros/serial.hpp:
-include/BrainUI.h:
+include/Brain_UI.h:
 include/api.h:
 include/pros/apix.h:
-include/HighStakesFieldImage.h:
+include/High_Stakes_Field_Image.h:
