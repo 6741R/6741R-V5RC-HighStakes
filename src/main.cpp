@@ -144,6 +144,28 @@ void MogoClampDriverControl() {
 }
 
 /**
+ * @brief Controls the mobile goal clamp during the Driver Control period.
+ * 
+ * This function manages the mobile goal clamp based on controller button inputs:
+ * - Pressing the Y button will activate the clamp.
+ * - Pressing the Right button will deactivate the clamp (release it).
+ */
+void RingStopperDriverControl() {
+
+	// Check if the Y button is pressed on the controller.
+	// If pressed, activate the clamp to secure the mobile goal.
+	if (master.get_digital(E_CONTROLLER_DIGITAL_B)) {
+		robot.ringStopper.lower();
+	}
+
+	// Check if the Right button is pressed on the controller.
+	// If pressed, deactivate the clamp to release the mobile goal.
+	if (master.get_digital(E_CONTROLLER_DIGITAL_DOWN)) {
+		robot.ringStopper.raise();
+	}
+}
+
+/**
  * @brief Manages the high stake lift controls during the Driver Control period.
  * 
  * This function adjusts the position of the high stake lift based on controller button inputs:
@@ -157,11 +179,13 @@ void LiftDriverControl() {
 	// If pressed, command the lift to rise.
 	if (master.get_digital(E_CONTROLLER_DIGITAL_L2)) {
 		robot.lift.RaiseLift();
+		robot.ringStopper.lower();
 	}
 	// Check if the L1 button is pressed.
 	// If pressed and L2 is not pressed, command the lift to lower.
 	else if (master.get_digital(E_CONTROLLER_DIGITAL_L1)) {
 		robot.lift.LowerLift();
+		robot.ringStopper.raise();
 	}
 	// If neither L2 nor L1 is pressed.
 	// Stop the lift to hold it in its current position.
@@ -237,6 +261,8 @@ void opcontrol() {
 	
 		// Call function to manage the intake system based on button input.
 		IntakeDriverControl();
+
+		RingStopperDriverControl();
 
 		// Small delay to prevent the loop from running too fast
 		// This helps to balance processing load and maintain responsiveness.

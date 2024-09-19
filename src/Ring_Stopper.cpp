@@ -1,5 +1,5 @@
 #include "Robot_Config.h"
-#include "Mogo_Clamp.h"
+#include "Ring_Stopper.h"
 
 // References the global robot configuration object for device management.
 extern Robot_Config robotDevices;
@@ -10,7 +10,7 @@ extern Robot_Config robotDevices;
  * Initializes the `isClamped` state to `false`, indicating that the clamp is 
  * not engaged when the object is created.
  */
-Mogo_Clamp::Mogo_Clamp() : isClamped(false) {}
+Mogo_Clamp::Ring_Stopper() : isLowered(false) {}
 
 /**
  * @brief Engages the mobile goal (mogo) clamp.
@@ -19,13 +19,9 @@ Mogo_Clamp::Mogo_Clamp() : isClamped(false) {}
  * mobile goal by setting its value to `true`. The `isClamped` state is then 
  * updated to reflect that the clamp is engaged.
  */
-void Mogo_Clamp::Clamp() {
-    robotDevices.mogoClampPiston.set_value(true);
-    isClamped = true;
-
-
-
-    
+void Ring_Stopper::Lower() {
+    robotDevices.ringStopperPiston.set_value(true);
+    isLowered = true;
 }
 
 /**
@@ -35,9 +31,9 @@ void Mogo_Clamp::Clamp() {
  * releasing the mobile goal. The `isClamped` state is then updated to reflect that 
  * the clamp is disengaged.
  */
-void Mogo_Clamp::Unclamp() {
-    robotDevices.mogoClampPiston.set_value(false);
-    isClamped = false;
+void Ring_Stopper::Raise() {
+    robotDevices.ringStopperPiston.set_value(false);
+    isLowered = false;
 }
 
 /**
@@ -48,6 +44,6 @@ void Mogo_Clamp::Unclamp() {
  * 
  * @return `true` if the clamp is engaged, `false` otherwise.
  */
-bool Mogo_Clamp::GetIsClamped() const {
+bool Ring_Stopper::GetIsLowered() const {
     return isClamped;
 }

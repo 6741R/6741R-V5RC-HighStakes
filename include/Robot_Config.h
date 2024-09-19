@@ -13,6 +13,7 @@ class Robot_Config {
 
         // Mogo-clamp sensor
         ADIDigitalOut mogoClampPiston;
+        ADIDigitalOut ringStopperPiston;
 
     // 3-WIRE IN (SENSORS)
 

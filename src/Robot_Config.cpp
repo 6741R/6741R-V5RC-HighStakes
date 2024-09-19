@@ -10,6 +10,10 @@ Robot_Config::Robot_Config() :
         #define DIGITAL_SENSOR_PORT_A 'A'
         mogoClampPiston(DIGITAL_SENSOR_PORT_A),
 
+        // Ring-stopper pneumatic device
+        #define DIGITAL_SENSOR_PORT_B 'B'
+        ringStopperPiston(DIGITAL_SENSOR_PORT_B),
+
     // 3-WIRE DIGITAL IN
 
         // None yet
