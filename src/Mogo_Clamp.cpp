@@ -22,10 +22,6 @@ Mogo_Clamp::Mogo_Clamp() : isClamped(false) {}
 void Mogo_Clamp::Clamp() {
     robotDevices.mogoClampPiston.set_value(true);
     isClamped = true;
-
-
-
-    
 }
 
 /**

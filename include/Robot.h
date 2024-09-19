@@ -38,6 +38,7 @@ class Robot {
         Lift_Control lift;      ///< Controls the lift mechanism.
         Mogo_Clamp mogoClamp;   ///< Controls the mobile goal clamp.
         Intake_Control intake;  ///< Controls the intake mechanism.
+        Ring_Stopper ringStopper; ///< Controls the ring stopping mechanism.
 };
 
 #endif

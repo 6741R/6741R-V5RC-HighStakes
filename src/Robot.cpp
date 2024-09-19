@@ -10,7 +10,7 @@ extern Robot_Config robotDevices;
  * Initializes the robot's subsystems including the lift, intake, and mogo clamp.
  * These subsystems are created as part of the Robot object upon instantiation.
  */
-Robot::Robot() : lift(), intake(), mogoClamp() {}
+Robot::Robot() : lift(), intake(), mogoClamp(), ringStopper() {}
 
 /**
  * @brief Initializes the robot's systems and devices.
