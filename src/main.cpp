@@ -133,13 +133,14 @@ void MogoClampDriverControl() {
 	// Check if the Y button is pressed on the controller.
 	// If pressed, activate the clamp to secure the mobile goal.
 	if (master.get_digital(E_CONTROLLER_DIGITAL_Y)) {
-		robot.mogoClamp.Clamp();
+    	robotDevices.mogoClampPiston.set_value(true);
 	}
 
 	// Check if the Right button is pressed on the controller.
 	// If pressed, deactivate the clamp to release the mobile goal.
 	if (master.get_digital(E_CONTROLLER_DIGITAL_RIGHT)) {
-		robot.mogoClamp.Unclamp();
+    	robotDevices.mogoClampPiston.set_value(false);
+
 	}
 }
 
@@ -155,13 +156,13 @@ void RingStopperDriverControl() {
 	// Check if the Y button is pressed on the controller.
 	// If pressed, activate the clamp to secure the mobile goal.
 	if (master.get_digital(E_CONTROLLER_DIGITAL_B)) {
-		robot.ringStopper.lower();
+		robot.ringStopper.Lower();
 	}
 
 	// Check if the Right button is pressed on the controller.
 	// If pressed, deactivate the clamp to release the mobile goal.
 	if (master.get_digital(E_CONTROLLER_DIGITAL_DOWN)) {
-		robot.ringStopper.raise();
+		robot.ringStopper.Raise();
 	}
 }
 
@@ -178,19 +179,21 @@ void LiftDriverControl() {
 	// Check if the L2 button is pressed.
 	// If pressed, command the lift to rise.
 	if (master.get_digital(E_CONTROLLER_DIGITAL_L2)) {
-		robot.lift.RaiseLift();
-		robot.ringStopper.lower();
+		c::motor_move(12, 127);
+		robot.ringStopper.Lower();
 	}
 	// Check if the L1 button is pressed.
 	// If pressed and L2 is not pressed, command the lift to lower.
 	else if (master.get_digital(E_CONTROLLER_DIGITAL_L1)) {
-		robot.lift.LowerLift();
-		robot.ringStopper.raise();
+		c::motor_move(12, -127);
+			robot.ringStopper.Raise();
 	}
 	// If neither L2 nor L1 is pressed.
 	// Stop the lift to hold it in its current position.
 	else {
-		robot.lift.StopLift();
+		    robotDevices.liftMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
+
+		c::motor_move(12, 0);
 	}
 }
 
@@ -207,12 +210,12 @@ void IntakeDriverControl() {
 	// Check if the R1 button is pressed.
 	// If pressed, command the intake to spin forward with full power (100%).
 	if (master.get_digital(E_CONTROLLER_DIGITAL_R1)) {
-		robot.intake.Intake(100);
+		 c::motor_move(3, 127);
 	} 
 	// Check if the R2 button is pressed.
 	// If pressed and R1 is not pressed, command the intake to spin backward with full power (100%).
 	else if (master.get_digital(E_CONTROLLER_DIGITAL_R2)) {
-		robot.intake.Outtake(100);
+		c::motor_move(3, -127);
 	} 
 	// If neither R1 nor R2 is pressed.
 	// Command the intake to stop and coast.
@@ -228,7 +231,7 @@ void IntakeDriverControl() {
  * It handles the control of the drivetrain, mobile goal clamp, lift, and intake systems.
  */
 void opcontrol() {
-	
+	/*
     pros::lcd::initialize(); // initialize brain screen
     robotDevices.chassis.calibrate(); // calibrate sensors
 	while (robotDevices.imu.is_calibrating()) {
@@ -245,8 +248,9 @@ void opcontrol() {
             // delay to save resources
             pros::delay(20);
         }
-    });
-	
+    });*/
+   // c::motor_move(3, 100);
+
 	// Infinite loop to continuously run operator control tasks.
 	while (true) {
 

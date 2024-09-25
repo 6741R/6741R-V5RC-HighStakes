@@ -6,6 +6,7 @@
 #include "Lift_Control.h"
 #include "Mogo_Clamp.h"
 #include "Intake_Control.h"
+#include "Ring_Stopper.h"
 
 /**
  * @class Robot

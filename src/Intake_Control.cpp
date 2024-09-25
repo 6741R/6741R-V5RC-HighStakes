@@ -18,7 +18,7 @@ extern Robot_Config robotDevices;
 void Intake_Control::Intake(int velocityPercent) {
 
     // Rotates the intake motor forward at the desired speed.
-    c::motor_move(6, (1 / velocityPercent) * 127);
+    c::motor_move(3, (1 / velocityPercent) * 127);
 }
 
 /**
@@ -33,7 +33,7 @@ void Intake_Control::Intake(int velocityPercent) {
 void Intake_Control::Outtake(int velocityPercent) {
 
     // Rotates the intake motor in reverse at the desired speed.
-    c::motor_move(6, (1 / velocityPercent) * -127);
+    c::motor_move(3, (1 / velocityPercent) * -127);
 }
 
 /**
@@ -45,7 +45,7 @@ void Intake_Control::Outtake(int velocityPercent) {
 void Intake_Control::StopIntake() {
 
     robotDevices.intakeMotor.set_brake_mode(E_MOTOR_BRAKE_COAST);
-    c::motor_move(6, 0);
+    c::motor_move(3, 0);
 }
 
 /**

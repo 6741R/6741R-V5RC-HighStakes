@@ -10,7 +10,7 @@ extern Robot_Config robotDevices;
  * Initializes the `isClamped` state to `false`, indicating that the clamp is 
  * not engaged when the object is created.
  */
-Mogo_Clamp::Ring_Stopper() : isLowered(false) {}
+Ring_Stopper::Ring_Stopper() : isLowered(false) {}
 
 /**
  * @brief Engages the mobile goal (mogo) clamp.
@@ -45,5 +45,5 @@ void Ring_Stopper::Raise() {
  * @return `true` if the clamp is engaged, `false` otherwise.
  */
 bool Ring_Stopper::GetIsLowered() const {
-    return isClamped;
+    return isLowered;
 }

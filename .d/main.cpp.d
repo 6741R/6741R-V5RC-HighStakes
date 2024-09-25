@@ -78,7 +78,7 @@ bin/main.cpp.o: src/main.cpp include/main.h include/api.h \
  include/pros/vision.hpp include/pros/vision.h include/Brain_UI.h \
  include/pros/apix.h include/api.h include/pros/serial.h \
  include/pros/serial.hpp include/Robot.h include/Lift_Control.h \
- include/Mogo_Clamp.h include/Intake_Control.h \
+ include/Mogo_Clamp.h include/Intake_Control.h include/Ring_Stopper.h \
  include/Autonomous_Manager.h include/Robot_Config.h \
  include/lemlib/api.hpp include/lemlib/pid.hpp include/lemlib/pose.hpp \
  include/lemlib/util.hpp include/lemlib/chassis/chassis.hpp \
@@ -253,6 +253,7 @@ include/Robot.h:
 include/Lift_Control.h:
 include/Mogo_Clamp.h:
 include/Intake_Control.h:
+include/Ring_Stopper.h:
 include/Autonomous_Manager.h:
 include/Robot_Config.h:
 include/lemlib/api.hpp:
