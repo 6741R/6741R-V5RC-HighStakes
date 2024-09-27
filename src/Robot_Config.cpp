@@ -32,8 +32,8 @@ Robot_Config::Robot_Config() :
         imu(14),
 
         // Rotation sensors for odometry
-        trackingPodHorizontal(15, true),
-        trackingPodVertical(1, true),
+        trackingPodHorizontal(16, true),
+        trackingPodVertical(19, true),
 
     // SUBSYSTEM MOTORS
 
