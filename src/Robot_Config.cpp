@@ -32,9 +32,8 @@ Robot_Config::Robot_Config() :
         imu(14),
 
         // Rotation sensors for odometry
-        trackingPodLeft(15, true),
-        trackingPodRight(1, true),
-        trackingPodBack(4, true),
+        trackingPodHorizontal(15, true),
+        trackingPodVertical(1, true),
 
     // SUBSYSTEM MOTORS
 
@@ -63,38 +62,36 @@ Robot_Config::Robot_Config() :
     // ODOMETRY OBJECTS
 
         // Tracking wheel objects
-        vertTrackingWheelLeft(&trackingPodLeft, lemlib::Omniwheel::NEW_325, -6.45),
-        vertTrackingWheelRight(&trackingPodRight, lemlib::Omniwheel::NEW_325, 6.45),
-        horTrackingWheel(&trackingPodBack, lemlib::Omniwheel::NEW_275, 1.75),
+        vertTrackingWheel(&trackingPodVertical, lemlib::Omniwheel::OLD_275, -1.25),
+        horTrackingWheel(&trackingPodHorizontal, lemlib::Omniwheel::OLD_275, 2.25),
 
         // Odometry sensors object
-
-        sensors(&vertTrackingWheelLeft, &vertTrackingWheelRight, &horTrackingWheel, nullptr, &imu),
+        sensors(&vertTrackingWheel, nullptr, &horTrackingWheel, nullptr, &imu),
 
     // PID CONSTRUCTORS
 
         // Lateral PID controller constructor
-        lateralController(6, // proportional gain (kP)
-                        0, // integral gain (kI)
-                        0.5, // derivative gain (kD)
-                                              3, // anti windup
-                                              1, // small error range, in inches
-                                              100, // small error range timeout, in milliseconds
-                                              3, // large error range, in inches
-                                              500, // large error range timeout, in milliseconds
-                                              20 // maximum acceleration (slew)
+        lateralController (6, // proportional gain (kP)
+                           0, // integral gain (kI)
+                           0.5, // derivative gain (kD)
+                           3, // anti windup
+                           1, // small error range, in inches
+                           100, // small error range timeout, in milliseconds
+                           3, // large error range, in inches
+                           500, // large error range timeout, in milliseconds
+                           20 // maximum acceleration (slew)
         ),
 
         // Angular PID controller constructor
-        angularController(1.05, // proportional gain (kP)
-                                              0, // integral gain (kI)
-                                              0.25, // derivative gain (kD)
-                                              3, // anti windup
-                                              1, // small error range, in inches
-                                              100, // small error range timeout, in milliseconds
-                                              3, // large error range, in inches
-                                              500, // large error range timeout, in milliseconds
-                                              0 // maximum acceleration (slew)
+        angularController( 1.05, // proportional gain (kP)
+                           0, // integral gain (kI)
+                           0.25, // derivative gain (kD)
+                           3, // anti windup
+                           1, // small error range, in inches
+                           100, // small error range timeout, in milliseconds
+                           3, // large error range, in inches
+                           500, // large error range timeout, in milliseconds
+                           0 // maximum acceleration (slew)
         ),
 
     // OTHER STUFF

@@ -25,9 +25,8 @@ class Robot_Config {
         Imu imu;
 
         // Rotation sensors for odometry
-        Rotation trackingPodLeft;
-        Rotation trackingPodRight;
-        Rotation trackingPodBack;
+        Rotation trackingPodVertical;
+        Rotation trackingPodHorizontal;
 
     // SUBSYSTEM MOTORS
 
@@ -56,8 +55,7 @@ class Robot_Config {
     // ODOMETRY OBJECTS
 
         // Tracking wheel objects
-        lemlib::TrackingWheel vertTrackingWheelLeft;
-        lemlib::TrackingWheel vertTrackingWheelRight;
+        lemlib::TrackingWheel vertTrackingWheel;
         lemlib::TrackingWheel horTrackingWheel;
 
         // Odometry sensors object

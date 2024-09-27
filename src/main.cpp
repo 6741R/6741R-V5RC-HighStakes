@@ -186,7 +186,7 @@ void LiftDriverControl() {
 	// If pressed and L2 is not pressed, command the lift to lower.
 	else if (master.get_digital(E_CONTROLLER_DIGITAL_L1)) {
 		c::motor_move(12, -127);
-			robot.ringStopper.Raise();
+			//robot.ringStopper.Raise();
 	}
 	// If neither L2 nor L1 is pressed.
 	// Stop the lift to hold it in its current position.
