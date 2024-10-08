@@ -29,14 +29,12 @@ Controller master(pros::E_CONTROLLER_MASTER);
 /*** @brief Load paths. */
 ASSET(testPath3_txt);
 
-
 /**
  * @brief Runs when robot is disabled by VEX Field Controller.
  */
 void disabled() {
 	// Placeholder
 }
-
 
 /**
  * @brief Runs when initialized by VEX Field Controller.
@@ -59,16 +57,23 @@ void competition_initialize() {
  * @brief Runs Autonomous period functions.
  */
 void autonomous() {
+
     // Calibrate sensors
-    robotDevices.chassis.calibrate(); // calibrate sensors
+    //robotDevices.chassis.calibrate(); // calibrate sensors
+
+	//robotDevices.imu.reset();
+	//delay(4000);
+/*
     while (robotDevices.imu.is_calibrating()) {
         pros::delay(10);
-    }
+    }*/
 
     // Set initial position to x:0, y:0, heading:0
-    robotDevices.chassis.setPose(-12, -12, 90);
+    robotDevices.chassis.setPose(-155, 0, 90);
+	robotDevices.chassis.follow("testPath3.txt", 2000, 15);
 
-    robotDevices.chassis.follow(testPath3_txt, 7, 15000);
+
+	master.print(0,0,"bruh2");
 
 	/*
 	// Retrieve the selected autonomous mode from the BrainUI.
