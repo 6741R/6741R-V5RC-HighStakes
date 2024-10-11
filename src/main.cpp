@@ -70,7 +70,7 @@ void autonomous() {
 
     // Set initial position to x:0, y:0, heading:0
     robotDevices.chassis.setPose(-155, 0, 90);
-	robotDevices.chassis.follow("testPath3.txt", 2000, 15);
+	robotDevices.chassis.follow("testPath3.txt", 10, 20000);
 
 
 	master.print(0,0,"bruh2");
