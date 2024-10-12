@@ -33,7 +33,7 @@ Robot_Config::Robot_Config() :
 
         // Rotation sensors for odometry
         trackingPodHorizontal(16, true),
-        trackingPodVertical(19, true),
+        trackingPodVertical(1, true),
 
     // SUBSYSTEM MOTORS
 

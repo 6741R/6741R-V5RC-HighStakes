@@ -26,8 +26,8 @@ Brain_UI ui;
 /*** @brief Represents the master controller used to operate the robot. */
 Controller master(pros::E_CONTROLLER_MASTER);
 
-/*** @brief Load paths. */
-ASSET(testPath3_txt);
+
+
 
 /**
  * @brief Runs when robot is disabled by VEX Field Controller.
@@ -47,33 +47,51 @@ void competition_initialize() {
 	robotDevices.lowerLeftMotor.set_brake_mode(E_MOTOR_BRAKE_COAST);
 	robotDevices.upperRightMotor.set_brake_mode(E_MOTOR_BRAKE_COAST);
 	robotDevices.lowerRightMotor.set_brake_mode(E_MOTOR_BRAKE_COAST);
-
+    // Calibrate sensors
+   /* robotDevices.chassis.calibrate(); // calibrate sensors
+    while (robotDevices.imu.is_calibrating()) {
+        pros::delay(10);
+    }*/
 	// Draws autonomous selector UI on the Brain using LVGL,
 	// an industry standard micro-controller screen UI library.
 	//ui.DisplayAutonSelectorUI();
 }
 
+/*** @brief Load paths. */
+ASSET(SKILLSFIRSTSTEP_txt);
+ASSET(SKILLSSECONDSTEP_txt);
+
+
 /**
  * @brief Runs Autonomous period functions.
  */
 void autonomous() {
-
+	robotDevices.frontLeftMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
+	robotDevices.frontRightMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
+	robotDevices.upperLeftMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
+	robotDevices.lowerLeftMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
+	robotDevices.upperRightMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
+	robotDevices.lowerRightMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
     // Calibrate sensors
-    //robotDevices.chassis.calibrate(); // calibrate sensors
-
-	//robotDevices.imu.reset();
-	//delay(4000);
-/*
+    robotDevices.chassis.calibrate(); // calibrate sensors
     while (robotDevices.imu.is_calibrating()) {
         pros::delay(10);
-    }*/
+    }
 
     // Set initial position to x:0, y:0, heading:0
-    robotDevices.chassis.setPose(-155, 0, 90);
-	robotDevices.chassis.follow("testPath3.txt", 10, 20000);
+    robotDevices.chassis.setPose(-60, 0, 90);
+	c::motor_move(3, 127);
+	delay(500);
+    robotDevices.chassis.follow(SKILLSFIRSTSTEP_txt, 11, 1800);
+	//robotDevices.chassis.stop();
+	delay(2000);
+		robotDevices.mogoClampPiston.set_value(true);
 
-
-	master.print(0,0,"bruh2");
+	c::motor_move(3, 0);
+	//robotDevices.chassis.setPose(-23.797, -23.548, 145);
+	robotDevices.chassis.follow(SKILLSSECONDSTEP_txt, 13, 15000, false);
+	delay(1500);
+			robotDevices.mogoClampPiston.set_value(false);
 
 	/*
 	// Retrieve the selected autonomous mode from the BrainUI.
@@ -236,7 +254,7 @@ void IntakeDriverControl() {
  * It handles the control of the drivetrain, mobile goal clamp, lift, and intake systems.
  */
 void opcontrol() {
-	/*
+	
     pros::lcd::initialize(); // initialize brain screen
     robotDevices.chassis.calibrate(); // calibrate sensors
 	while (robotDevices.imu.is_calibrating()) {
@@ -253,9 +271,9 @@ void opcontrol() {
             // delay to save resources
             pros::delay(20);
         }
-    });*/
+    });
    // c::motor_move(3, 100);
-
+/*
 	// Infinite loop to continuously run operator control tasks.
 	while (true) {
 
@@ -277,4 +295,5 @@ void opcontrol() {
 		// This helps to balance processing load and maintain responsiveness.
 		delay(25);
 	}
+	*/
 }
