@@ -60,18 +60,23 @@ void competition_initialize() {
 /*** @brief Load paths. */
 ASSET(SKILLSFIRSTSTEP_txt);
 ASSET(SKILLSSECONDSTEP_txt);
+ASSET(SKILLSTHIRDSTEP_txt);
+ASSET(SKILLSFOURTHSTEP_txt);
 
 
 /**
  * @brief Runs Autonomous period functions.
  */
 void autonomous() {
+	
 	robotDevices.frontLeftMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
 	robotDevices.frontRightMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
 	robotDevices.upperLeftMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
 	robotDevices.lowerLeftMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
 	robotDevices.upperRightMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
 	robotDevices.lowerRightMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
+	robotDevices.liftMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
+
     // Calibrate sensors
     robotDevices.chassis.calibrate(); // calibrate sensors
     while (robotDevices.imu.is_calibrating()) {
@@ -80,20 +85,42 @@ void autonomous() {
 
     // Set initial position to x:0, y:0, heading:0
     robotDevices.chassis.setPose(-60, 0, 90);
+
+	// Spin intake
 	c::motor_move(3, 127);
 	delay(500);
-    robotDevices.chassis.follow(SKILLSFIRSTSTEP_txt, 11, 1800);
-	//robotDevices.chassis.stop();
-	delay(2000);
-		robotDevices.mogoClampPiston.set_value(true);
+	robotDevices.mogoClampPiston.set_value(true);
+	c::motor_move(12, 127);
+	delay(150);
+	c::motor_move(12, 0);
 
+	// Approach goal
+    robotDevices.chassis.follow(SKILLSFIRSTSTEP_txt, 12, 1800);
+	delay(1900);
+
+	// Clamp goal
+
+	// Stop intake
 	c::motor_move(3, 0);
-	//robotDevices.chassis.setPose(-23.797, -23.548, 145);
-	robotDevices.chassis.follow(SKILLSSECONDSTEP_txt, 13, 15000, false);
-	delay(1500);
-			robotDevices.mogoClampPiston.set_value(false);
 
-	/*
+	// Intake ring
+	robotDevices.chassis.follow(SKILLSSECONDSTEP_txt, 8, 15000, false);
+	delay(1000);
+
+	// Unclamp goalS
+	robotDevices.mogoClampPiston.set_value(false);
+
+	// Intake again
+	c::motor_move(3, 127);
+
+	// Intake two other rings
+	robotDevices.chassis.follow(SKILLSTHIRDSTEP_txt, 15, 6000, true);
+	delay(500);
+	robotDevices.chassis.turnToHeading(160, 1000); 
+	//delay(250);
+	robotDevices.chassis.follow(SKILLSFOURTHSTEP_txt, 15, 15000, true);
+
+			/*
 	// Retrieve the selected autonomous mode from the BrainUI.
 	int selectedMode = ui.selectedAuton;
 	// Determine which autonomous routine to execute based on the selected mode.
@@ -120,6 +147,7 @@ void autonomous() {
 			break;
 	}
 	*/
+	
 }
 
 /**
@@ -254,7 +282,13 @@ void IntakeDriverControl() {
  * It handles the control of the drivetrain, mobile goal clamp, lift, and intake systems.
  */
 void opcontrol() {
-	
+	robotDevices.frontLeftMotor.set_brake_mode(E_MOTOR_BRAKE_COAST);
+	robotDevices.frontRightMotor.set_brake_mode(E_MOTOR_BRAKE_COAST);
+	robotDevices.upperLeftMotor.set_brake_mode(E_MOTOR_BRAKE_COAST);
+	robotDevices.lowerLeftMotor.set_brake_mode(E_MOTOR_BRAKE_COAST);
+	robotDevices.upperRightMotor.set_brake_mode(E_MOTOR_BRAKE_COAST);
+	robotDevices.lowerRightMotor.set_brake_mode(E_MOTOR_BRAKE_COAST);
+	/*
     pros::lcd::initialize(); // initialize brain screen
     robotDevices.chassis.calibrate(); // calibrate sensors
 	while (robotDevices.imu.is_calibrating()) {
@@ -262,7 +296,7 @@ void opcontrol() {
 	}
 
     // print position to brain screen
-    pros::Task screen_task([&]() {
+      pros::Task screen_task([&]() {
         while (true) {
             // print robot location to the brain screen
             pros::lcd::print(0, "X: %f", robotDevices.chassis.getPose().x); // x
@@ -272,11 +306,12 @@ void opcontrol() {
             pros::delay(20);
         }
     });
+	*/
    // c::motor_move(3, 100);
-/*
+
 	// Infinite loop to continuously run operator control tasks.
 	while (true) {
-
+       
 		// Call function to handle drivetrain controls based on joystick input.
 		DrivetrainDriverControl();
 		
@@ -295,5 +330,5 @@ void opcontrol() {
 		// This helps to balance processing load and maintain responsiveness.
 		delay(25);
 	}
-	*/
+	
 }
