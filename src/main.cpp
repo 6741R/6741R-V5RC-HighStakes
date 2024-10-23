@@ -47,6 +47,8 @@ void competition_initialize() {
 	robotDevices.lowerLeftMotor.set_brake_mode(E_MOTOR_BRAKE_COAST);
 	robotDevices.upperRightMotor.set_brake_mode(E_MOTOR_BRAKE_COAST);
 	robotDevices.lowerRightMotor.set_brake_mode(E_MOTOR_BRAKE_COAST);
+	robotDevices.liftMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
+	robotDevices.liftMotor.tare_position();
     // Calibrate sensors
    /* robotDevices.chassis.calibrate(); // calibrate sensors
     while (robotDevices.imu.is_calibrating()) {
@@ -58,10 +60,13 @@ void competition_initialize() {
 }
 
 /*** @brief Load paths. */
-ASSET(SKILLSFIRSTSTEP_txt);
+ASSET(matchblueWPstep1_txt);
 ASSET(SKILLSSECONDSTEP_txt);
 ASSET(SKILLSTHIRDSTEP_txt);
 ASSET(SKILLSFOURTHSTEP_txt);
+ASSET(match2_txt);
+ASSET(match_txt);
+ASSET(match3_txt);
 
 
 /**
@@ -82,72 +87,30 @@ void autonomous() {
     while (robotDevices.imu.is_calibrating()) {
         pros::delay(10);
     }
+master.print(0,0, "1");
 
-    // Set initial position to x:0, y:0, heading:0
-    robotDevices.chassis.setPose(-60, 0, 90);
 
-	// Spin intake
-	c::motor_move(3, 127);
-	delay(500);
+	//robotDevices.drivetrain.autonDrive(24);
+
 	robotDevices.mogoClampPiston.set_value(true);
-	c::motor_move(12, 127);
-	delay(150);
-	c::motor_move(12, 0);
+	delay(250);
+	master.print(0,0, "2");
 
-	// Approach goal
-    robotDevices.chassis.follow(SKILLSFIRSTSTEP_txt, 12, 1800);
-	delay(1900);
+	    robotDevices.chassis.setPose(50, 42, 60);
 
-	// Clamp goal
+	robotDevices.chassis.follow(match2_txt, 15, 3000, false);
+		delay(1450);
 
-	// Stop intake
-	c::motor_move(3, 0);
+	master.print(0,0, "3");
+		robotDevices.mogoClampPiston.set_value(false);
+		c::motor_move(3, 127);
+		//robotDevices.chassis.follow(match3_txt, 15, 4000);
+		robotDevices.chassis.turnToHeading(320, 500);
+delay(500);
+	    robotDevices.chassis.setPose(24, 24, 330);
 
-	// Intake ring
-	robotDevices.chassis.follow(SKILLSSECONDSTEP_txt, 8, 15000, false);
-	delay(1000);
+	robotDevices.chassis.follow(match3_txt, 16, 3000, true);
 
-	// Unclamp goalS
-	robotDevices.mogoClampPiston.set_value(false);
-
-	// Intake again
-	c::motor_move(3, 127);
-
-	// Intake two other rings
-	robotDevices.chassis.follow(SKILLSTHIRDSTEP_txt, 15, 6000, true);
-	delay(500);
-	robotDevices.chassis.turnToHeading(160, 1000); 
-	//delay(250);
-	robotDevices.chassis.follow(SKILLSFOURTHSTEP_txt, 15, 15000, true);
-
-			/*
-	// Retrieve the selected autonomous mode from the BrainUI.
-	int selectedMode = ui.selectedAuton;
-	// Determine which autonomous routine to execute based on the selected mode.
-	switch(selectedMode) {
-		case 0:
-			// Executes the autonomous routine for the Blue Alliance, left side.
-			autonManager.BlueMatchLeft();
-			break;
-		case 1:
-			// Executes the autonomous routine for the Blue Alliance, right side.
-			autonManager.BlueMatchRight();
-			break;
-		case 2:
-			// Executes the autonomous routine for the Red Alliance, left side.
-			autonManager.RedMatchLeft();
-			break;
-		case 3:
-			// Executes the autonomous routine for the Red Alliance, right side.
-			autonManager.RedMatchRight();
-			break;
-		case 4:
-			// Executes the skills autonomous routine by default
-			autonManager.Skills();
-			break;
-	}
-	*/
-	
 }
 
 /**
@@ -217,6 +180,28 @@ void RingStopperDriverControl() {
 	}
 }
 
+void prepArm() {
+	while (robotDevices.liftMotor.get_position() > -295) {
+		c::motor_move(12, -127);
+		delay(10);
+	}
+	c::motor_move(12, 0);
+}
+
+void scoreArm() {
+	while(robotDevices.liftMotor.get_position() > -1450) {
+		c::motor_move(12, -127);
+		delay(10);
+	}
+	c::motor_move(12, 0);
+	delay(250);
+	while(robotDevices.liftMotor.get_position() < 0) {
+		c::motor_move(12, 127);
+		delay(10);
+	}
+	c::motor_move(12, 0);
+}
+
 /**
  * @brief Manages the high stake lift controls during the Driver Control period.
  * 
@@ -227,16 +212,17 @@ void RingStopperDriverControl() {
  */
 void LiftDriverControl() {
 
+
+
 	// Check if the L2 button is pressed.
 	// If pressed, command the lift to rise.
-	if (master.get_digital(E_CONTROLLER_DIGITAL_L2)) {
-		c::motor_move(12, 127);
-		robot.ringStopper.Lower();
+	if (master.get_digital(E_CONTROLLER_DIGITAL_L1)) {
+		c::motor_move(12, -127);
 	}
 	// Check if the L1 button is pressed.
 	// If pressed and L2 is not pressed, command the lift to lower.
-	else if (master.get_digital(E_CONTROLLER_DIGITAL_L1)) {
-		c::motor_move(12, -127);
+	else if (master.get_digital(E_CONTROLLER_DIGITAL_L2)) {
+		c::motor_move(12, 127);
 			//robot.ringStopper.Raise();
 	}
 	// If neither L2 nor L1 is pressed.
