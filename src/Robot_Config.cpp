@@ -34,11 +34,13 @@ Robot_Config::Robot_Config() :
         // Rotation sensors for odometry
         trackingPodHorizontal(16, true),
         trackingPodVertical(1, true),
+        liftRotation(21, false),
 
     // SUBSYSTEM MOTORS
 
         liftMotor(12, E_MOTOR_GEAR_BLUE),
         intakeMotor(6, E_MOTOR_GEAR_BLUE),
+        
 
     // DRIVETRAIN MOTORS
 

@@ -25,6 +25,7 @@ class Autonomous_Manager {
          */
         Autonomous_Manager(Robot& robot);
 
+
         /**
          * @brief Executes the autonomous routine for the Blue Alliance, left side.
          *

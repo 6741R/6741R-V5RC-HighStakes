@@ -4,6 +4,8 @@
 #include "Robot.h"
 #include "Autonomous_Manager.h"
 #include "Robot_Config.h"
+#include <thread>
+
 
 using namespace pros;
 
@@ -49,6 +51,13 @@ void competition_initialize() {
 	robotDevices.lowerRightMotor.set_brake_mode(E_MOTOR_BRAKE_COAST);
 	robotDevices.liftMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
 	robotDevices.liftMotor.tare_position();
+
+	    // Calibrate sensors
+    robotDevices.chassis.calibrate(); // calibrate sensors
+    while (robotDevices.imu.is_calibrating()) {
+        pros::delay(10);
+    }
+	//master.print(0,0, "1");
     // Calibrate sensors
    /* robotDevices.chassis.calibrate(); // calibrate sensors
     while (robotDevices.imu.is_calibrating()) {
@@ -56,17 +65,35 @@ void competition_initialize() {
     }*/
 	// Draws autonomous selector UI on the Brain using LVGL,
 	// an industry standard micro-controller screen UI library.
-	//ui.DisplayAutonSelectorUI();
+	ui.DisplayAutonSelectorUI();
 }
 
 /*** @brief Load paths. */
-ASSET(matchblueWPstep1_txt);
-ASSET(SKILLSSECONDSTEP_txt);
-ASSET(SKILLSTHIRDSTEP_txt);
-ASSET(SKILLSFOURTHSTEP_txt);
-ASSET(match2_txt);
-ASSET(match_txt);
-ASSET(match3_txt);
+ASSET(BlueRightStep1_txt);
+ASSET(BlueRightStep2_txt);
+ASSET(BlueRightStep3_txt);
+ASSET(BlueRightStep4_txt);
+ASSET(BlueRightStep5_txt);
+ASSET(BlueRightStep6_txt);
+ASSET(BlueRightStep7_txt);
+
+ASSET(BlueLeftStep1_txt);
+ASSET(BlueLeftStep2_txt);
+ASSET(BlueLeftStep3_txt);
+ASSET(BlueLeftStep4_txt);
+ASSET(BlueLeftStep5_txt);
+ASSET(BlueLeftStep6_txt);
+
+ASSET(SkillsStep1_txt);
+ASSET(SkillsStep3_txt);
+ASSET(SkillsStep4_txt);
+ASSET(SkillsStep5_txt);
+
+
+
+
+
+
 
 
 /**
@@ -74,43 +101,294 @@ ASSET(match3_txt);
  */
 void autonomous() {
 	
-	robotDevices.frontLeftMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
-	robotDevices.frontRightMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
-	robotDevices.upperLeftMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
-	robotDevices.lowerLeftMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
-	robotDevices.upperRightMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
-	robotDevices.lowerRightMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
-	robotDevices.liftMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
+// Retrieve the selected autonomous mode from the BrainUI.
+	int selectedMode = ui.selectedAuton;
+	selectedMode = 4;
+	// Determine which autonomous routine to execute based on the selected mode.
+	switch(selectedMode) {
+		case 0:
 
-    // Calibrate sensors
-    robotDevices.chassis.calibrate(); // calibrate sensors
-    while (robotDevices.imu.is_calibrating()) {
-        pros::delay(10);
-    }
-master.print(0,0, "1");
+			robotDevices.chassis.setPose(52, 23, 90);
 
 
+			// Executes the autonomous routine for the Blue Alliance, left side.
+			robotDevices.frontLeftMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
+			robotDevices.frontRightMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
+			robotDevices.upperLeftMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
+			robotDevices.lowerLeftMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
+			robotDevices.upperRightMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
+			robotDevices.lowerRightMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
+			robotDevices.liftMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
+
+			robotDevices.mogoClampPiston.set_value(true);
+
+			robotDevices.chassis.follow(BlueRightStep1_txt, 15, 10000, false);
+			robotDevices.chassis.waitUntilDone();
+			robotDevices.mogoClampPiston.set_value(false);
+			delay(250);
+			robotDevices.chassis.turnToHeading(359, 750);
+			robotDevices.chassis.waitUntilDone();
+			robotDevices.chassis.setPose(24, 24, 359);
+
+			c::motor_move(3, 127);
+			robotDevices.chassis.follow(BlueRightStep2_txt, 15, 10000, true);
+			robotDevices.chassis.waitUntilDone();
+			robotDevices.chassis.turnToHeading(279, 750);
+			robotDevices.chassis.waitUntilDone();
+			robotDevices.chassis.setPose(24, 46, 279);
+			robotDevices.chassis.follow(BlueRightStep3_txt, 15, 1500, true);
+			robotDevices.chassis.waitUntilDone();
+			robotDevices.chassis.setPose(8.5, 51, 279);
+
+			robotDevices.chassis.follow(BlueRightStep4_txt, 15, 10000, false);
+			robotDevices.chassis.setPose(24, 47, 279);
+			robotDevices.chassis.turnToHeading(245, 750);
+			robotDevices.chassis.waitUntilDone();
+			robotDevices.chassis.setPose(31, 46, 245);
+			robotDevices.chassis.follow(BlueRightStep5_txt, 15, 10000, true);
+			robotDevices.chassis.waitUntilDone();
+			robotDevices.chassis.setPose(18, 42, 245);
+
+			robotDevices.chassis.follow(BlueRightStep6_txt, 15, 10000, false);
+			robotDevices.chassis.waitUntilDone();
+			robotDevices.chassis.turnToHeading(190, 750);
+			robotDevices.chassis.waitUntilDone();
+			robotDevices.chassis.setPose(29, 47, 190);
+			robotDevices.chassis.follow(BlueRightStep7_txt, 15, 10000, true);
+
+			c::motor_move(12, -127);
+			delay(1500);
+			c::motor_move(12, 0);
+
+			break;
+		case 1:
+
+			robotDevices.chassis.setPose(59, -12, 180);
+
+			// Executes the autonomous routine for the Blue Alliance, left side.
+			robotDevices.frontLeftMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
+			robotDevices.frontRightMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
+			robotDevices.upperLeftMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
+			robotDevices.lowerLeftMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
+			robotDevices.upperRightMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
+			robotDevices.lowerRightMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
+			robotDevices.liftMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
+
+			robotDevices.chassis.follow(BlueLeftStep1_txt, 15, 10000, false);
+			robotDevices.chassis.waitUntilDone();
+			robotDevices.chassis.turnToHeading(270, 1000);
+			robotDevices.chassis.waitUntilDone();
+			robotDevices.chassis.setPose(59, -3.75, 270);
+			robotDevices.chassis.follow(BlueLeftStep2_txt, 6, 1000, false);
+			robotDevices.chassis.waitUntilDone();
+			c::motor_move(3, 127);
+			delay(500);
+			c::motor_move(3, 0);
+
+			robotDevices.chassis.setPose(69, -3.75, 270);
+			robotDevices.chassis.follow(BlueLeftStep3_txt, 6, 1000, true);
+			robotDevices.chassis.waitUntilDone();
+			robotDevices.chassis.turnToHeading(43, 1000);
+			robotDevices.chassis.waitUntilDone();
+			robotDevices.mogoClampPiston.set_value(true);
+			robotDevices.chassis.setPose(69, -3.75, 43);
+			robotDevices.chassis.follow(BlueLeftStep4_txt, 15, 1000, false);
+			robotDevices.chassis.waitUntilDone();
+			delay(250);
+			robotDevices.mogoClampPiston.set_value(false);
+			delay(250);
+			robotDevices.chassis.turnToHeading(160, 1000);
+			robotDevices.chassis.waitUntilDone();
+
+			robotDevices.chassis.setPose(45.491, -28, 160);
+			c::motor_move(3, 127);
+			robotDevices.chassis.follow(BlueLeftStep5_txt, 15, 1000, true);
+			robotDevices.chassis.waitUntilDone();
+
+			delay(500);
+			robotDevices.chassis.setPose(49, -43, 160);
+
+			robotDevices.chassis.follow(BlueLeftStep6_txt, 15, 1000, false);
+
+
+
+
+
+
+
+
+			// Executes the autonomous routine for the Blue Alliance, right side.
+			autonManager.BlueMatchRight();
+			break;
+		case 2:
+			// Executes the autonomous routine for the Red Alliance, left side.
+			autonManager.RedMatchLeft();
+			break;
+		case 3:
+			
+			break;
+		case 4:
+					robotDevices.liftMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
+
+			// Executes the skills autonomous routine by default
+			robotDevices.chassis.setPose(-62, 0, 90);
+			c::motor_move(3, 127);
+			delay(500);
+			c::motor_move(3, 0);
+			delay(150);
+
+			robotDevices.chassis.turnToHeading(350, 1000);
+			robotDevices.chassis.waitUntilDone();
+			robotDevices.mogoClampPiston.set_value(true);
+			robotDevices.chassis.follow(SkillsStep1_txt, 15, 10000, false);
+			robotDevices.chassis.waitUntilDone();
+			delay(200);
+			robotDevices.mogoClampPiston.set_value(false);
+			delay(100);
+			robotDevices.chassis.turnToHeading(220, 1000);
+			robotDevices.chassis.waitUntilDone();
+			c::motor_move(3, 127);
+			robotDevices.chassis.setPose(-49, -18, 220);
+
+			robotDevices.chassis.follow(SkillsStep3_txt, 15, 10000, true);
+			robotDevices.chassis.waitUntilDone();
+
+			robotDevices.chassis.turnToHeading(140, 1000);
+			robotDevices.chassis.waitUntilDone();
+			robotDevices.chassis.follow(SkillsStep4_txt, 15, 10000, true);
+			robotDevices.chassis.waitUntilDone();
+			robotDevices.chassis.turnToHeading(93, 1000);
+			robotDevices.chassis.waitUntilDone();
+			delay(250);
+						robotDevices.chassis.setPose(-49, -58, 93);
+
+						robotDevices.chassis.follow(SkillsStep5_txt, 20, 10000, true);
+
+
+
+			break;
+	}
+
+
+
+/*
 	//robotDevices.drivetrain.autonDrive(24);
 
 	robotDevices.mogoClampPiston.set_value(true);
 	delay(250);
 	master.print(0,0, "2");
 
-	    robotDevices.chassis.setPose(50, 42, 60);
+	robotDevices.chassis.setPose(50, 42, 60);
 
-	robotDevices.chassis.follow(match2_txt, 15, 3000, false);
-		delay(1450);
+	robotDevices.chassis.follow(match2_txt, 15, 1100, false);
+	robotDevices.chassis.waitUntilDone();
+	delay(100);
 
 	master.print(0,0, "3");
-		robotDevices.mogoClampPiston.set_value(false);
-		c::motor_move(3, 127);
-		//robotDevices.chassis.follow(match3_txt, 15, 4000);
-		robotDevices.chassis.turnToHeading(320, 500);
-delay(500);
-	    robotDevices.chassis.setPose(24, 24, 330);
+	robotDevices.mogoClampPiston.set_value(false);
+	delay(250);
+	c::motor_move(3, 127);
+	delay(100);
+	robotDevices.chassis.turnToHeading(340, 1000);
+	robotDevices.chassis.waitUntilDone();
+	robotDevices.chassis.setPose(33, 31, 340);
 
-	robotDevices.chassis.follow(match3_txt, 16, 3000, true);
+	robotDevices.chassis.follow(match5_txt, 15, 3000, true);
+	robotDevices.chassis.waitUntilDone();
+	robotDevices.chassis.turnToHeading(259, 1000);
+	robotDevices.chassis.waitUntilDone();
 
+	robotDevices.chassis.setPose(23, 51, 259);
+	robotDevices.chassis.follow(match6_txt, 15, 1500, true);
+	robotDevices.chassis.waitUntilDone();
+
+			//delay(500);
+	robotDevices.chassis.setPose(4, 50, 262);
+
+	robotDevices.chassis.follow(match7_txt, 15, 3000, false);
+	robotDevices.chassis.waitUntilDone();
+
+	robotDevices.chassis.turnToHeading(239, 1000);
+	robotDevices.chassis.waitUntilDone();
+    master.print(0,0, "buns");
+
+	robotDevices.chassis.setPose(19, 50, 238);
+
+	robotDevices.chassis.follow(match8_txt, 15, 3000, true);
+	master.print(0,0, "buns222");
+	delay(1500);
+	c::motor_move(3, 0);		
+
+	robotDevices.chassis.waitUntilDone();
+	robotDevices.chassis.follow(match9_txt, 15, 3000, false);
+	robotDevices.chassis.waitUntilDone();
+		robotDevices.mogoClampPiston.set_value(true);
+		robotDevices.chassis.turnToHeading(320, 100);
+
+										robotDevices.chassis.waitUntilDone();
+												robotDevices.chassis.setPose(34, 50, 0);
+
+		robotDevices.chassis.follow(match10_txt, 22, 6000, false);
+														robotDevices.chassis.waitUntilDone();
+
+
+
+
+
+
+*/
+
+	//robotDevices.drivetrain.autonDrive(24);
+
+/*
+	robotDevices.mogoClampPiston.set_value(true);
+	delay(250);
+	master.print(0,0, "2");
+
+	robotDevices.chassis.setPose(-50, 42, 300);
+
+	robotDevices.chassis.follow(lmatch2_txt, 15, 1100, false);
+	robotDevices.chassis.waitUntilDone();
+	delay(100);
+
+	master.print(0,0, "3");
+	robotDevices.mogoClampPiston.set_value(false);
+	delay(250);
+	c::motor_move(3, 127);
+	delay(100);
+	robotDevices.chassis.turnToHeading(20, 1000);
+	robotDevices.chassis.waitUntilDone();
+	robotDevices.chassis.setPose(-33, 31, 20);
+
+	robotDevices.chassis.follow(lmatch5_txt, 15, 3000, true);
+	robotDevices.chassis.waitUntilDone();
+	robotDevices.chassis.turnToHeading(95, 1000);
+	robotDevices.chassis.waitUntilDone();
+
+	robotDevices.chassis.setPose(-23, 51, 95);
+	robotDevices.chassis.follow(lmatch6_txt, 15, 1500, true);
+	robotDevices.chassis.waitUntilDone();
+
+			//delay(500);
+	robotDevices.chassis.setPose(-4, 50, 95);
+
+	robotDevices.chassis.follow(lmatch7_txt, 15, 3000, false);
+	robotDevices.chassis.waitUntilDone();
+
+	robotDevices.chassis.turnToHeading(125, 1000);
+	robotDevices.chassis.waitUntilDone();
+    master.print(0,0, "buns");
+
+	robotDevices.chassis.setPose(-19, 50, 125);
+
+	robotDevices.chassis.follow(lmatch8_txt, 15, 3000, true);
+	master.print(0,0, "buns222");
+	delay(1500);
+	c::motor_move(3, 0);		
+
+	robotDevices.chassis.waitUntilDone();
+	
+*/
 }
 
 /**
@@ -180,27 +458,41 @@ void RingStopperDriverControl() {
 	}
 }
 
+
+
+// Prep Arm Function
 void prepArm() {
 	while (robotDevices.liftMotor.get_position() > -295) {
 		c::motor_move(12, -127);
-		delay(10);
+		pros::delay(10);
 	}
 	c::motor_move(12, 0);
 }
 
+// Score Arm Function
 void scoreArm() {
-	while(robotDevices.liftMotor.get_position() > -1450) {
+	while (robotDevices.liftMotor.get_position() > -1450) {
 		c::motor_move(12, -127);
-		delay(10);
+		pros::delay(10);
 	}
 	c::motor_move(12, 0);
-	delay(250);
-	while(robotDevices.liftMotor.get_position() < 0) {
+	pros::delay(250);
+	while (robotDevices.liftMotor.get_position() < 0) {
 		c::motor_move(12, 127);
-		delay(10);
+		pros::delay(10);
 	}
 	c::motor_move(12, 0);
 }
+
+// Wrapper functions to start tasks
+void startPrepArmTask() {
+	pros::Task prepArmTask(prepArm);
+}
+
+void startScoreArmTask() {
+	pros::Task scoreArmTask(scoreArm);
+}
+
 
 /**
  * @brief Manages the high stake lift controls during the Driver Control period.
@@ -217,13 +509,20 @@ void LiftDriverControl() {
 	// Check if the L2 button is pressed.
 	// If pressed, command the lift to rise.
 	if (master.get_digital(E_CONTROLLER_DIGITAL_L1)) {
-		c::motor_move(12, -127);
+			// Create threads to run prepArm and scoreArm asynchronously
+			c::motor_move(12, -80);
+
+
+	// Detach threads so they run independently
 	}
 	// Check if the L1 button is pressed.
 	// If pressed and L2 is not pressed, command the lift to lower.
 	else if (master.get_digital(E_CONTROLLER_DIGITAL_L2)) {
-		c::motor_move(12, 127);
-			//robot.ringStopper.Raise();
+			// Create threads to run prepArm and scoreArm asynchronously
+			c::motor_move(12, 127);
+
+
+	// Detach threads so they run independently
 	}
 	// If neither L2 nor L1 is pressed.
 	// Stop the lift to hold it in its current position.
@@ -268,12 +567,14 @@ void IntakeDriverControl() {
  * It handles the control of the drivetrain, mobile goal clamp, lift, and intake systems.
  */
 void opcontrol() {
+
 	robotDevices.frontLeftMotor.set_brake_mode(E_MOTOR_BRAKE_COAST);
 	robotDevices.frontRightMotor.set_brake_mode(E_MOTOR_BRAKE_COAST);
 	robotDevices.upperLeftMotor.set_brake_mode(E_MOTOR_BRAKE_COAST);
 	robotDevices.lowerLeftMotor.set_brake_mode(E_MOTOR_BRAKE_COAST);
 	robotDevices.upperRightMotor.set_brake_mode(E_MOTOR_BRAKE_COAST);
 	robotDevices.lowerRightMotor.set_brake_mode(E_MOTOR_BRAKE_COAST);
+
 	/*
     pros::lcd::initialize(); // initialize brain screen
     robotDevices.chassis.calibrate(); // calibrate sensors

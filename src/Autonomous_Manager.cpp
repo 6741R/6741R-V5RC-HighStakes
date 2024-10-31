@@ -12,18 +12,19 @@
  */
 Autonomous_Manager::Autonomous_Manager(Robot& robot) : robot(robot) {}
 
+
 // Autonomous routines
+
 
 /**
  * @brief Executes the autonomous routine for the Blue Alliance, left side.
  * 
- * This function contains the sequence of actions that the robot should perform 
+ * This function contains the sequence of actions that the robotDevices should perform 
  * during the autonomous period when positioned on the left side of the Blue Alliance field.
  */
 void Autonomous_Manager::BlueMatchLeft() {
 
-    // Example action: Start the intake motor at full speed.
-    robot.intake.Intake(127);
+
 }
 
 /**
@@ -53,7 +54,7 @@ void Autonomous_Manager::RedMatchLeft() {
  * right side during the autonomous period. Currently empty and needs to be implemented.
  */
 void Autonomous_Manager::RedMatchRight() {
-
+    
 }
 
 /**

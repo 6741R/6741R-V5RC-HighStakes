@@ -27,6 +27,7 @@ class Robot_Config {
         // Rotation sensors for odometry
         Rotation trackingPodVertical;
         Rotation trackingPodHorizontal;
+        Rotation liftRotation;
 
     // SUBSYSTEM MOTORS
 
