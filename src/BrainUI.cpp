@@ -46,11 +46,11 @@ lv_res_t Brain_UI::btn_click_action(lv_obj_t * btn) {
 	switch(id) {
 		case 0:
 			lv_label_set_text(selectedAutonLabel, "Blue Alliance Left");
-			selectedAuton = 0;
+			selectedAuton = 1;
 			break;
 		case 1:
 			lv_label_set_text(selectedAutonLabel, "Blue Alliance Right");
-			selectedAuton = 1;
+			selectedAuton = 0;
 			break;
 		case 2:
 			lv_label_set_text(selectedAutonLabel, "Red Alliance Left");
@@ -74,7 +74,7 @@ lv_res_t Brain_UI::btn_click_action(lv_obj_t * btn) {
 void Brain_UI::DisplayAutonSelectorUI() {
 
 	// Set default autonomous mode
-	selectedAuton = 0;
+	selectedAuton = 4;
 
 	// Draw field image on the brain screen
 	lv_obj_t * img = lv_img_create(lv_scr_act(), NULL);

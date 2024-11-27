@@ -1,19 +1,16 @@
-45.491, -28, 70.512
-46.262, -29.845, 66.813
-47.033, -31.691, 62.897
-47.804, -33.536, 58.72
-48.575, -35.382, 54.222
-49.346, -37.227, 49.315
-50.117, -39.072, 43.863
-50.889, -40.918, 37.63
-51.66, -42.763, 30.133
-52.431, -44.608, 20
-52.935, -45.814, 0
-52.935, -45.814, 0
-60.645, -64.268, 0
+45.491, -28, 58.72
+45.883, -29.961, 54.222
+46.275, -31.922, 49.315
+46.666, -33.884, 43.863
+47.058, -35.845, 37.63
+47.45, -37.806, 30.133
+47.842, -39.767, 20
+48.08, -40.96, 0
+48.08, -40.96, 0
+51.998, -60.572, 0
 endData
 127
 100
 200
-45.491, -28, 49.213, -36.907, 49.213, -36.907, 52.935, -45.814
-#PATH.JERRYIO-DATA {"appVersion":"0.8.3","format":"LemLib v0.5","gc":{"robotWidth":12,"robotHeight":12,"robotIsHolonomic":false,"showRobot":false,"uol":2.54,"pointDensity":2,"controlMagnetDistance":1.968503937007874,"fieldImage":{"displayName":"V5RC 2025 - High Stakes","signature":"V5RC 2025 - High Stakes","origin":{"__type":"built-in"}},"coordinateSystem":"VEX Gaming Positioning System"},"paths":[{"segments":[{"controls":[{"uid":"ndS49ENSwn","x":45.491,"y":-28,"lock":false,"visible":true,"heading":165,"__type":"end-point"},{"uid":"geKDFEKzT1","x":52.93458294098908,"y":-45.814499640049,"lock":false,"visible":true,"heading":165,"__type":"end-point"}],"speedProfiles":[],"lookaheadKeyframes":[],"uid":"kSNqkFcXK6"}],"pc":{"speedLimit":{"minLimit":{"value":0,"label":"0"},"maxLimit":{"value":127,"label":"127"},"step":1,"from":20,"to":100},"bentRateApplicableRange":{"minLimit":{"value":0,"label":"0"},"maxLimit":{"value":1,"label":"1"},"step":0.001,"from":0,"to":0.1},"maxDecelerationRate":127},"name":"Path","uid":"pZ3jqHVwS0","lock":false,"visible":true}]}
+45.491, -28, 46.785, -34.48, 46.785, -34.48, 48.08, -40.96
+#PATH.JERRYIO-DATA {"appVersion":"0.8.3","format":"LemLib v0.5","gc":{"robotWidth":12,"robotHeight":12,"robotIsHolonomic":false,"showRobot":false,"uol":2.54,"pointDensity":2,"controlMagnetDistance":1.968503937007874,"fieldImage":{"displayName":"V5RC 2025 - High Stakes","signature":"V5RC 2025 - High Stakes","origin":{"__type":"built-in"}},"coordinateSystem":"VEX Gaming Positioning System"},"paths":[{"segments":[{"controls":[{"uid":"ndS49ENSwn","x":45.491,"y":-28,"lock":false,"visible":true,"heading":165,"__type":"end-point"},{"uid":"geKDFEKzT1","x":48.079980690348116,"y":-40.959897389408034,"lock":false,"visible":true,"heading":165,"__type":"end-point"}],"speedProfiles":[],"lookaheadKeyframes":[],"uid":"kSNqkFcXK6"}],"pc":{"speedLimit":{"minLimit":{"value":0,"label":"0"},"maxLimit":{"value":127,"label":"127"},"step":1,"from":20,"to":100},"bentRateApplicableRange":{"minLimit":{"value":0,"label":"0"},"maxLimit":{"value":1,"label":"1"},"step":0.001,"from":0,"to":0.1},"maxDecelerationRate":127},"name":"Path","uid":"pZ3jqHVwS0","lock":false,"visible":true}]}

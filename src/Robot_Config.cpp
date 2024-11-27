@@ -7,12 +7,12 @@ Robot_Config::Robot_Config() :
     // 3-WIRE DIGITAL OUT (PNEUMATICS)
 
         // Mogo-clamp pneumatic device
-        #define DIGITAL_SENSOR_PORT_A 'A'
-        mogoClampPiston(DIGITAL_SENSOR_PORT_A),
+        #define DIGITAL_SENSOR_PORT_B 'B'
+        mogoClampPiston(DIGITAL_SENSOR_PORT_B),
 
         // Ring-stopper pneumatic device
-        #define DIGITAL_SENSOR_PORT_B 'B'
-        ringStopperPiston(DIGITAL_SENSOR_PORT_B),
+        #define DIGITAL_SENSOR_PORT_A 'A'
+        ringStopperPiston(DIGITAL_SENSOR_PORT_A),
 
     // 3-WIRE DIGITAL IN
 
@@ -29,30 +29,33 @@ Robot_Config::Robot_Config() :
     // V5 SENSORS
 
         // Inertial sensor
-        imu(14),
+        imu(5),
 
         // Rotation sensors for odometry
         trackingPodHorizontal(16, true),
-        trackingPodVertical(1, true),
+        trackingPodVertical(6, true),
         liftRotation(21, false),
 
     // SUBSYSTEM MOTORS
 
-        liftMotor(12, E_MOTOR_GEAR_BLUE),
-        intakeMotor(6, E_MOTOR_GEAR_BLUE),
+        liftMotor(7, E_MOTOR_GEAR_BLUE),
+        intakeMotor(17, E_MOTOR_GEAR_BLUE),
+        intakeMotor2(13, E_MOTOR_GEAR_GREEN),
+
+
         
 
     // DRIVETRAIN MOTORS
 
         // Motors comprising the left half of the Drivetrain when looking from the front
-        frontRightMotor (8, E_MOTOR_GEAR_BLUE),
-        lowerRightMotor (10, E_MOTOR_GEAR_BLUE),
-        upperRightMotor (-9, E_MOTOR_GEAR_BLUE), 
+        frontRightMotor (-20, E_MOTOR_GEAR_BLUE),
+        lowerRightMotor (18, E_MOTOR_GEAR_BLUE),
+        upperRightMotor (-19, E_MOTOR_GEAR_BLUE), 
 
         // Motors comprising the right half of the Drivetrain when looking from the front
-        frontLeftMotor (-17, E_MOTOR_GEAR_BLUE),
-        lowerLeftMotor (-19, E_MOTOR_GEAR_BLUE),
-        upperLeftMotor (18, E_MOTOR_GEAR_BLUE),
+        frontLeftMotor (9, E_MOTOR_GEAR_BLUE),
+        lowerLeftMotor (-10, E_MOTOR_GEAR_BLUE),
+        upperLeftMotor (8, E_MOTOR_GEAR_BLUE),
 
         // Drivetrain motorgroups
         leftMotors ({frontLeftMotor, lowerLeftMotor, upperLeftMotor}),

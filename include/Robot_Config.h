@@ -33,6 +33,7 @@ class Robot_Config {
 
         Motor liftMotor;
         Motor intakeMotor;
+        Motor intakeMotor2;
 
     // DRIVETRAIN MOTORS
 
