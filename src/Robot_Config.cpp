@@ -29,11 +29,11 @@ Robot_Config::Robot_Config() :
     // V5 SENSORS
 
         // Inertial sensor
-        imu(5),
+        imu(12),
 
         // Rotation sensors for odometry
-        trackingPodHorizontal(16, true),
-        trackingPodVertical(6, true),
+        trackingPodHorizontal(6, true),
+        trackingPodVertical(5, true),
         liftRotation(21, false),
 
     // SUBSYSTEM MOTORS
@@ -62,13 +62,13 @@ Robot_Config::Robot_Config() :
         rightMotors ({frontRightMotor, lowerRightMotor, upperRightMotor}),
 
         // Initialization of the Drivetrain object
-        drivetrain(&leftMotors, &rightMotors, 13, lemlib::Omniwheel::NEW_325, 480, 2),
+        drivetrain(&leftMotors, &rightMotors, 11.475, lemlib::Omniwheel::NEW_325, 450, 2),
 
     // ODOMETRY OBJECTS
 
         // Tracking wheel objects
-        vertTrackingWheel(&trackingPodVertical, lemlib::Omniwheel::OLD_275, -1.25),
-        horTrackingWheel(&trackingPodHorizontal, lemlib::Omniwheel::OLD_275, 2.25),
+        vertTrackingWheel(&trackingPodVertical, lemlib::Omniwheel::NEW_2, 1.25),
+        horTrackingWheel(&trackingPodHorizontal, lemlib::Omniwheel::NEW_2, -1.475),
 
         // Odometry sensors object
         sensors(&vertTrackingWheel, nullptr, &horTrackingWheel, nullptr, &imu),
