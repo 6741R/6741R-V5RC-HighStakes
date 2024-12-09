@@ -12,7 +12,8 @@ bin/Robot.cpp.o: src/Robot.cpp include/Robot.h include/Lift_Control.h \
  include/fmt/core.h include/fmt/format-inl.h \
  include/lemlib/logger/baseSink.hpp include/fmt/args.h \
  include/lemlib/logger/message.hpp include/lemlib/logger/infoSink.hpp \
- include/lemlib/logger/telemetrySink.hpp
+ include/lemlib/logger/telemetrySink.hpp include/pros/optical.hpp \
+ include/pros/optical.h include/pros/error.h
 include/Robot.h:
 include/Lift_Control.h:
 include/Mogo_Clamp.h:
@@ -48,3 +49,6 @@ include/fmt/args.h:
 include/lemlib/logger/message.hpp:
 include/lemlib/logger/infoSink.hpp:
 include/lemlib/logger/telemetrySink.hpp:
+include/pros/optical.hpp:
+include/pros/optical.h:
+include/pros/error.h:

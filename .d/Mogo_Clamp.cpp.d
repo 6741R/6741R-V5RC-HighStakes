@@ -11,7 +11,8 @@ bin/Mogo_Clamp.cpp.o: src/Mogo_Clamp.cpp include/Robot_Config.h \
  include/fmt/format-inl.h include/lemlib/logger/baseSink.hpp \
  include/fmt/args.h include/lemlib/logger/message.hpp \
  include/lemlib/logger/infoSink.hpp \
- include/lemlib/logger/telemetrySink.hpp include/Mogo_Clamp.h
+ include/lemlib/logger/telemetrySink.hpp include/pros/optical.hpp \
+ include/pros/optical.h include/pros/error.h include/Mogo_Clamp.h
 include/Robot_Config.h:
 include/lemlib/api.hpp:
 include/lemlib/pid.hpp:
@@ -42,4 +43,7 @@ include/fmt/args.h:
 include/lemlib/logger/message.hpp:
 include/lemlib/logger/infoSink.hpp:
 include/lemlib/logger/telemetrySink.hpp:
+include/pros/optical.hpp:
+include/pros/optical.h:
+include/pros/error.h:
 include/Mogo_Clamp.h:

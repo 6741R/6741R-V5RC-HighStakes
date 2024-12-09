@@ -1,0 +1,43 @@
+-23.444, -23.807, 51
+-22.963, -25.748, 51
+-22.482, -27.689, 51
+-22.001, -29.631, 51
+-21.52, -31.572, 51
+-21.039, -33.513, 51
+-20.557, -35.455, 51
+-20.076, -37.396, 51
+-19.595, -39.337, 51
+-19.114, -41.278, 51
+-18.633, -43.22, 51
+-18.152, -45.161, 51
+-17.67, -47.102, 51
+-17.189, -49.043, 51
+-16.708, -50.985, 51
+-16.227, -52.926, 51
+-15.746, -54.867, 51
+-15.265, -56.808, 51
+-14.783, -58.75, 51
+-14.302, -60.691, 51
+-13.124, -61.993, 51
+-11.232, -62.64, 51
+-9.339, -63.288, 51
+-7.447, -63.935, 51
+-5.555, -64.582, 51
+-3.662, -65.23, 51
+-1.77, -65.877, 51
+0.122, -66.524, 51
+2.015, -67.172, 47.833
+3.907, -67.819, 42.19
+5.799, -68.467, 35.665
+7.692, -69.114, 27.641
+9.584, -69.761, 16
+10.538, -70.088, 0
+10.538, -70.088, 0
+29.461, -76.561, 0
+endData
+127
+51
+200
+-23.444, -23.807, -18.752, -42.74, -18.752, -42.74, -14.059, -61.673
+-14.059, -61.673, -1.761, -65.88, -1.761, -65.88, 10.538, -70.088
+#PATH.JERRYIO-DATA {"appVersion":"0.8.3","format":"LemLib v0.5","gc":{"robotWidth":12,"robotHeight":12,"robotIsHolonomic":false,"showRobot":false,"uol":2.54,"pointDensity":2,"controlMagnetDistance":1.968503937007874,"fieldImage":{"displayName":"V5RC 2025 - High Stakes (Skills)","signature":"V5RC 2025 - High Stakes (Skills)","origin":{"__type":"built-in"}},"coordinateSystem":"VEX Gaming Positioning System"},"paths":[{"segments":[{"controls":[{"uid":"1yIRtJlVGZ","x":-23.444492469095433,"y":-23.806969437143294,"lock":false,"visible":true,"heading":145,"__type":"end-point"},{"uid":"Z6uSqaOqA5","x":-14.058928117856233,"y":-61.67286699214282,"lock":false,"visible":true,"heading":145,"__type":"end-point"}],"speedProfiles":[],"lookaheadKeyframes":[],"uid":"Hxdu9tbes5"},{"controls":[{"uid":"Z6uSqaOqA5","x":-14.058928117856233,"y":-61.67286699214282,"lock":false,"visible":true,"heading":145,"__type":"end-point"},{"uid":"lfjrXFb57J","x":10.537723285391323,"y":-70.08751089325382,"lock":false,"visible":true,"heading":110,"__type":"end-point"}],"speedProfiles":[],"lookaheadKeyframes":[],"uid":"BTGPApHL65"}],"pc":{"speedLimit":{"minLimit":{"value":0,"label":"0"},"maxLimit":{"value":127,"label":"127"},"step":1,"from":14,"to":51},"bentRateApplicableRange":{"minLimit":{"value":0,"label":"0"},"maxLimit":{"value":1,"label":"1"},"step":0.001,"from":0,"to":0.1},"maxDecelerationRate":127},"name":"Path","uid":"raTjTM3hEc","lock":false,"visible":true}]}

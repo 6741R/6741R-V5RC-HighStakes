@@ -3,6 +3,7 @@
 #define ROBOT_CONFIG_H
 
 #include "lemlib/api.hpp"
+#include "pros/optical.hpp"
 
 using namespace pros;
 
@@ -20,7 +21,7 @@ class Robot_Config {
         // Nothing yet
 
     // V5 SENSORS
-    
+        Optical optical;
         // Inertial sensor
         Imu imu;
 

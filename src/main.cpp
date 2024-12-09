@@ -4,8 +4,8 @@
 #include "Robot.h"
 #include "Autonomous_Manager.h"
 #include "Robot_Config.h"
+#include "pros/optical.hpp"
 #include <thread>
-
 
 using namespace pros;
 
@@ -28,9 +28,6 @@ Brain_UI ui;
 /*** @brief Represents the master controller used to operate the robot. */
 Controller master(pros::E_CONTROLLER_MASTER);
 
-
-
-
 /**
  * @brief Runs when robot is disabled by VEX Field Controller.
  */
@@ -38,116 +35,119 @@ void disabled() {
 	// Placeholder
 }
 
-
 /**
  * @brief Runs when initialized by VEX Field Controller.
  */
 void competition_initialize() {
+	robotDevices.frontLeftMotor.set_brake_mode(E_MOTOR_BRAKE_COAST); robotDevices.frontRightMotor.set_brake_mode(E_MOTOR_BRAKE_COAST);
+	robotDevices.upperLeftMotor.set_brake_mode(E_MOTOR_BRAKE_COAST); robotDevices.lowerLeftMotor.set_brake_mode(E_MOTOR_BRAKE_COAST);
+	robotDevices.upperRightMotor.set_brake_mode(E_MOTOR_BRAKE_COAST); robotDevices.lowerRightMotor.set_brake_mode(E_MOTOR_BRAKE_COAST);
 
-	robotDevices.frontLeftMotor.set_brake_mode(E_MOTOR_BRAKE_COAST);
-	robotDevices.frontRightMotor.set_brake_mode(E_MOTOR_BRAKE_COAST);
-	robotDevices.upperLeftMotor.set_brake_mode(E_MOTOR_BRAKE_COAST);
-	robotDevices.lowerLeftMotor.set_brake_mode(E_MOTOR_BRAKE_COAST);
-	robotDevices.upperRightMotor.set_brake_mode(E_MOTOR_BRAKE_COAST);
-	robotDevices.lowerRightMotor.set_brake_mode(E_MOTOR_BRAKE_COAST);
 	robotDevices.liftMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
 	robotDevices.liftMotor.tare_position();
 
-	    // Calibrate sensors
-    robotDevices.chassis.calibrate(); // calibrate sensors
+	// Calibrate sensors
+    robotDevices.chassis.calibrate();
     while (robotDevices.imu.is_calibrating()) {
         pros::delay(10);
     }
-	//master.print(0,0, "1");
-    // Calibrate sensors
-   /* robotDevices.chassis.calibrate(); // calibrate sensors
-    while (robotDevices.imu.is_calibrating()) {
-        pros::delay(10);
-    }*/
+
 	// Draws autonomous selector UI on the Brain using LVGL,
 	// an industry standard micro-controller screen UI library.
 	ui.DisplayAutonSelectorUI();
 }
 
+
+
+// Prep Arm Function
+void prepArm() {
+	c::motor_set_brake_mode(7, E_MOTOR_BRAKE_HOLD); c::motor_set_brake_mode(16, E_MOTOR_BRAKE_HOLD);
+	while (robotDevices.liftRotation.get_position() > -2400) {
+		c::motor_move(7, -90); c::motor_move(16, 90);
+		pros::delay(10);
+	}
+	c::motor_move(7, 0); c::motor_move(16, 0);
+}
+
+// Score Arm Function
+void scoreArm() {
+	c::motor_set_brake_mode(7, E_MOTOR_BRAKE_HOLD); c::motor_set_brake_mode(16, E_MOTOR_BRAKE_HOLD);
+	while (robotDevices.liftMotor.get_position() > -2300) {
+		c::motor_move(17, 50);
+		c::motor_move(7, -90); c::motor_move(16, 90);
+		pros::delay(10);
+	}
+	c::motor_move(17, 0);
+	c::motor_move(7, 0); c::motor_move(16, 0);
+}
+
+// Score Arm Function
+void returnArm() {
+	c::motor_set_brake_mode(7, E_MOTOR_BRAKE_HOLD); c::motor_set_brake_mode(16, E_MOTOR_BRAKE_HOLD);
+	while (robotDevices.liftMotor.get_position() < -600) {
+		c::motor_move(7, 90); c::motor_move(16, -90);
+		pros::delay(10);
+	}
+	c::motor_move(7, 0); c::motor_move(16, 0);
+}
+
+// Score Arm Function
+void restArm() {
+	c::motor_set_brake_mode(7, E_MOTOR_BRAKE_HOLD); c::motor_set_brake_mode(16, E_MOTOR_BRAKE_HOLD);
+	while (robotDevices.liftMotor.get_position() < -100) {
+		c::motor_move(7, 90); c::motor_move(16, -90);
+		pros::delay(10);
+	}
+	c::motor_move(7, 0); c::motor_move(16, 0);
+}
+
+void ejectRing() {
+	c::motor_move(17, 0);
+	delay(300);
+}
+
+// Wrapper functions to start tasks
+void startPrepArmTask() { pros::Task prepArmTask(prepArm); }
+
+void startScoreArmTask() { pros::Task scoreArmTask(scoreArm); }
+
+void startReturnArmTask() { pros::Task returnArmTask(returnArm); }
+
+void startrestArm() { pros::Task restArmTask(restArm); }
+
+void startEjectTask() { pros::Task ejectTask(ejectRing); }
+
 /*** @brief Load paths. */
-ASSET(BlueRightStep1_txt);
-ASSET(BlueRightStep2_txt);
-ASSET(BlueRightStep3_txt);
-ASSET(BlueRightStep4_txt);
-ASSET(BlueRightStep5_txt);
-ASSET(BlueRightStep6_txt);
-ASSET(BlueRightStep7_txt);
+ASSET(bluelefty_txt);
+ASSET(blueleft2_txt);
+ASSET(blueleft3_txt);
+ASSET(blueleft4_txt);
 
-ASSET(BlueLeftStep1_txt);
-ASSET(BlueLeftStep2_txt);
-ASSET(BlueLeftStep3_txt);
-ASSET(BlueLeftStep4_txt);
-ASSET(BlueLeftStep5_txt);
-ASSET(BlueLeftStep6_txt);
+ASSET(redrighty_txt);
+ASSET(redright2_txt);
+ASSET(redright3_txt);
+ASSET(redright4_txt);
 
-ASSET(RedRightStep1_txt);
-ASSET(RedRightStep2_txt);
-ASSET(RedRightStep3_txt);
-ASSET(RedRightStep4_txt);
-ASSET(RedRightStep5_txt);
-ASSET(RedRightStep6_txt);
+ASSET(skills1_txt);
+ASSET(skills2_txt);
+ASSET(skills3_txt);
+ASSET(skills4_txt);
+ASSET(skills5_txt);
+ASSET(skills6_txt);
+ASSET(skills7_txt);
+ASSET(skills8_txt);
 
-ASSET(RedLeftStep1_txt);
-ASSET(RedLeftStep2_txt);
-ASSET(RedLeftStep3_txt);
-ASSET(RedLeftStep4_txt);
-ASSET(RedLeftStep5_txt);
-ASSET(RedLeftStep6_txt);
-ASSET(RedLeftStep7_txt);
-
-
-
-ASSET(SkillsStep1_txt);
-ASSET(SkillsStep2_txt);
-
-ASSET(SkillsStep3_txt);
-ASSET(SkillsStep4_txt);
-ASSET(SkillsStep5_txt);
-ASSET(SkillsStep6_txt);
-ASSET(SkillsStep7_txt);
-ASSET(SkillsStep8_txt);
-
-ASSET(SkillsStep9_txt);
-ASSET(SkillsStep10_txt);
-ASSET(SkillsStep11_txt);
-ASSET(SkillsStep12_txt);
-ASSET(SkillsStep13_txt);
-ASSET(SkillsStep14_txt);
-ASSET(SkillsStep15_txt);
-ASSET(SkillsStep16_txt);
-ASSET(SkillsStep17_txt);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+bool colorSortBlue = false;
 /**
  * @brief Runs Autonomous period functions.
  */
 void autonomous() {
-	
+	robotDevices.liftRotation.set_position(359);
+
 // Retrieve the selected autonomous mode from the BrainUI.
 	int selectedMode = ui.selectedAuton;
-	//selectedMode = 3;
+	
+	selectedMode = 3;
 	// Blue Right - 0
 	// Blue Left - 1
 	// Red left - 2
@@ -156,9 +156,10 @@ void autonomous() {
 	// Determine which autonomous routine to execute based on the selected mode.
 	switch(selectedMode) {
 		case 0:
+			colorSortBlue = true;
 			// Executes the autonomous routine for the Blue Alliance, Right side.
 			// Set initial position
-			robotDevices.chassis.setPose(52, 23, 90);
+			robotDevices.chassis.setPose(65, -7, 10);
 			robotDevices.frontLeftMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
 			robotDevices.frontRightMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
 			robotDevices.upperLeftMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
@@ -166,79 +167,13 @@ void autonomous() {
 			robotDevices.upperRightMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
 			robotDevices.lowerRightMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
 			robotDevices.liftMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
-
-			// Move arm back 
-			c::motor_move(12, 127);
-			delay(50);
-			c::motor_move(12, 0);
-
-			// Ready clamp
-			robotDevices.mogoClampPiston.set_value(true);
-
-			// Approach goal
-			robotDevices.chassis.follow(BlueRightStep1_txt, 15, 10000, false);
-			robotDevices.chassis.waitUntilDone();
-
-			// Clamp goal
-			robotDevices.mogoClampPiston.set_value(false);
-			delay(250);
-
-			// Face stack of rings
-			robotDevices.chassis.turnToHeading(359, 750);
-			robotDevices.chassis.waitUntilDone();
-			robotDevices.chassis.setPose(24, 24, 359);
-
-			// Turn on intake
-			c::motor_move(3, 127);
-			c::motor_move(13, 127);
-
-			// Intake stack of rings
-			robotDevices.chassis.follow(BlueRightStep2_txt, 15, 10000, true);
-			robotDevices.chassis.waitUntilDone();
-
-			// Face group of 4 rings
-			robotDevices.chassis.turnToHeading(289, 750);
-			robotDevices.chassis.waitUntilDone();
-			robotDevices.chassis.setPose(24, 46, 289);
-
-			// Intake first ring from group of 4
-			robotDevices.chassis.follow(BlueRightStep3_txt, 15, 1500, true);
-			robotDevices.chassis.waitUntilDone();
-			robotDevices.chassis.setPose(8.5, 51, 279);
-
-			// Back up
-			robotDevices.chassis.follow(BlueRightStep4_txt, 15, 10000, false);
-			robotDevices.chassis.setPose(24, 47, 279);
-
-			// Face second ring from group of 4
-			robotDevices.chassis.turnToHeading(260, 750);
-			robotDevices.chassis.waitUntilDone();
-			robotDevices.chassis.setPose(31, 46, 260);
-
-			// Intake second ring from group of 4
-			robotDevices.chassis.follow(BlueRightStep5_txt, 15, 10000, true);
-			robotDevices.chassis.waitUntilDone();
-			delay(500);
-			robotDevices.chassis.setPose(18, 42, 245);
-
-			// Face ladder
-			//robotDevices.chassis.turnToHeading(160, 1000);
-			//robotDevices.chassis.waitUntilDone();
-			//delay(500);
-			//robotDevices.chassis.setPose(6.9, 42.8, 160);
-
-			// Touch ladder for WP
-			//robotDevices.chassis.follow(BlueRightStep7_txt, 15, 10000, true);
-			//robotDevices.chassis.waitUntilDone();
-			//delay(500);
-			//c::motor_move(3, 0);
-			//c::motor_move(13, 0);
+			
 			break;
-
 		case 1:
+			colorSortBlue = true;
 			// Executes the autonomous routine for the Blue Alliance, Left side.
 			// Set initial position
-			robotDevices.chassis.setPose(59, -12, 180);
+			robotDevices.chassis.setPose(65, -7, 10);
 			robotDevices.frontLeftMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
 			robotDevices.frontRightMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
 			robotDevices.upperLeftMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
@@ -246,66 +181,49 @@ void autonomous() {
 			robotDevices.upperRightMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
 			robotDevices.lowerRightMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
 			robotDevices.liftMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
-
-			// Move arm back 
-			c::motor_move(12, 127);
-			delay(50);
-			c::motor_move(12, 0);
-
-			// Align with alliance stake
-			robotDevices.chassis.follow(BlueLeftStep1_txt, 15, 10000, false);
-			robotDevices.chassis.waitUntilDone();
-
-			// Point torwards alliance stake
-			robotDevices.chassis.turnToHeading(265, 1000);
-			robotDevices.chassis.waitUntilDone();
-			robotDevices.chassis.setPose(59, -3.75, 280);
-
-			// Approach alliance stake and score
-			robotDevices.chassis.follow(BlueLeftStep2_txt, 6, 1000, false);
-			robotDevices.chassis.waitUntilDone();
-			c::motor_move(3, 127);
-			c::motor_move(13, 127);
-			delay(500);
-			c::motor_move(3, 0);
-			c::motor_move(13, 0);
-			robotDevices.chassis.setPose(69, -3.75, 270);
-
-			// Back away from alliance stake
-			robotDevices.chassis.follow(BlueLeftStep3_txt, 6, 1000, true);
-			robotDevices.chassis.waitUntilDone();
-
-			// Face mobile goal
-			robotDevices.chassis.turnToHeading(43, 1000);
-			robotDevices.chassis.waitUntilDone();
+			c::motor_move(7, -127);
+			c::motor_move(16, 127);
+			delay(800);
+			c::motor_move(7, 127);
+			c::motor_move(16, -127);
+			delay(1000);
+			c::motor_move(7, 0);
+			c::motor_move(16, 0);
 			robotDevices.mogoClampPiston.set_value(true);
-			robotDevices.chassis.setPose(69, -3.75, 43);
-
-			// Approach mobile goal and clamp
-			robotDevices.chassis.follow(BlueLeftStep4_txt, 15, 2000, false);
+			robotDevices.chassis.follow(bluelefty_txt, 15, 10000, false);
 			robotDevices.chassis.waitUntilDone();
-			delay(250);
+			delay(100);
 			robotDevices.mogoClampPiston.set_value(false);
-			delay(400);
+						delay(250);
 
-			// Face stack of rings
-			robotDevices.chassis.turnToHeading(160, 1000);
+			c::motor_move(17, -127);
+			robotDevices.chassis.turnToHeading(180, 2000);
+			robotDevices.chassis.follow(blueleft2_txt, 15, 5000, true);
 			robotDevices.chassis.waitUntilDone();
-			robotDevices.chassis.setPose(45.491, -28, 160);
-
-			// Intake stack of rings
-			c::motor_move(3, 127);
-			c::motor_move(13, 127);
-			robotDevices.chassis.follow(BlueLeftStep5_txt, 15, 1000, true);
+			delay(1250);
+			c::motor_move(17, 0);
+			robotDevices.chassis.turnToHeading(330, 2000);
+			c::motor_move(17, -127);
+			robotDevices.ringStopperPiston.set_value(true);
+			delay(20);
+            robotDevices.chassis.follow(blueleft3_txt, 15, 10000, true);
 			robotDevices.chassis.waitUntilDone();
 			delay(500);
-			robotDevices.chassis.setPose(49, -43, 160);
+			robotDevices.ringStopperPiston.set_value(false);
+			delay(350);
 
-			// Touch ladder for WP
-			robotDevices.chassis.follow(BlueLeftStep6_txt, 15, 1750, false);
-
+            robotDevices.chassis.turnToHeading(270, 1000);
+			delay(100);
+            robotDevices.chassis.follow(blueleft4_txt, 15, 10000, true);
+			robotDevices.chassis.waitUntilDone();
+			c::motor_move(16, 127);
+			c::motor_move(7, -127);
+		    delay(700);
+			c::motor_move(16, 0);
+			c::motor_move(7, 0);
 			break;
 		case 2:
+			colorSortBlue = false;
 			// Executes the autonomous routine for the Red Alliance, Left side.
 			// Set initial position
 			robotDevices.chassis.setPose(-52, 23, -90);
@@ -316,66 +234,62 @@ void autonomous() {
 			robotDevices.upperRightMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
 			robotDevices.lowerRightMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
 			robotDevices.liftMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
-
-			// Move arm back 
-			c::motor_move(12, 127);
-			delay(50);
-			c::motor_move(12, 0);
-
-			// Approach goal and clamp
-			robotDevices.mogoClampPiston.set_value(true);
-			robotDevices.chassis.follow(RedLeftStep1_txt, 15, 10000, false);
-			robotDevices.chassis.waitUntilDone();
-			robotDevices.mogoClampPiston.set_value(false);
-			delay(250);
-
-			// Face stack of rings
-			robotDevices.chassis.turnToHeading(-359, 750);
-			robotDevices.chassis.waitUntilDone();
-			robotDevices.chassis.setPose(-24, 24, -359);
-
-			// Intake stack of rings
-			c::motor_move(3, 127);
-			c::motor_move(13, 127);
-			robotDevices.chassis.follow(RedLeftStep2_txt, 15, 10000, true);
-			robotDevices.chassis.waitUntilDone();
-
-			// Face group of 4 rings
-			robotDevices.chassis.turnToHeading(70, 750);
-			robotDevices.chassis.waitUntilDone();
-			robotDevices.chassis.setPose(-24, 46, 70);
-
-			// Intake first ring of group of 4
-			robotDevices.chassis.follow(RedLeftStep3_txt, 15, 1500, true);
-			robotDevices.chassis.waitUntilDone();
-			robotDevices.chassis.setPose(-8.5, 51, -279);
-			
-			// Back up
-			robotDevices.chassis.follow(RedLeftStep4_txt, 15, 10000, false);
-			robotDevices.chassis.setPose(-24, 47, -279);
-
-			// Face second ring of group of 4 and intake it
-			robotDevices.chassis.turnToHeading(-245, 750);
-			robotDevices.chassis.waitUntilDone();
-			robotDevices.chassis.setPose(-31, 46, -245);
-			robotDevices.chassis.follow(RedLeftStep5_txt, 15, 10000, true);
-			robotDevices.chassis.waitUntilDone();
-			delay(500);
-			robotDevices.chassis.setPose(-18, 42, -245);
-
-			// Face ladder for WP
-			robotDevices.chassis.turnToHeading(200, 1000);
-			robotDevices.chassis.waitUntilDone();
-			robotDevices.chassis.setPose(-7.5, 40.5, 200);
-
-			// Touch ladder for WP
-			robotDevices.chassis.follow(RedLeftStep7_txt, 15, 10000, true);
 			break;
 		case 3:
-			// Executes the autonomous routine for the Red Alliance, Right side.
-
+			// Executes the autonomous routine for the Blue Alliance, Left side.
 			// Set initial position
-			robotDevices.chassis.setPose(-59, -12, -180);
+			robotDevices.chassis.setPose(-65.88, -7.301, 350);
+			robotDevices.frontLeftMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
+			robotDevices.frontRightMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
+			robotDevices.upperLeftMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
+			robotDevices.lowerLeftMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
+			robotDevices.upperRightMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
+			robotDevices.lowerRightMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
+			robotDevices.liftMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
+			c::motor_move(7, -127);
+			c::motor_move(16, 127);
+			delay(800);
+			c::motor_move(7, 127);
+			c::motor_move(16, -127);
+			delay(1000);
+			c::motor_move(7, 0);
+			c::motor_move(16, 0);
+			robotDevices.mogoClampPiston.set_value(true);
+			robotDevices.chassis.follow(redrighty_txt, 15, 10000, false);
+			robotDevices.chassis.waitUntilDone();
+			delay(100);
+			robotDevices.mogoClampPiston.set_value(false);
+						delay(200);
+
+			c::motor_move(17, -127);
+			robotDevices.chassis.turnToHeading(180, 2000);
+			robotDevices.chassis.follow(redright2_txt, 15, 5000, true);
+			robotDevices.chassis.waitUntilDone();
+			delay(1250);
+			c::motor_move(17, 0);
+			robotDevices.chassis.turnToHeading(330, 2000);
+			c::motor_move(17, -127);
+			robotDevices.ringStopperPiston.set_value(true);
+			delay(20);
+            robotDevices.chassis.follow(redright3_txt, 15, 10000, true);
+			robotDevices.chassis.waitUntilDone();
+			delay(500);
+			robotDevices.ringStopperPiston.set_value(false);
+			delay(350);
+
+            robotDevices.chassis.turnToHeading(90, 1000);
+			delay(100);
+						c::motor_move(16, 127);
+			c::motor_move(7, -127);
+		    delay(400);
+			c::motor_move(16, 0);
+			c::motor_move(7, 0);
+            robotDevices.chassis.follow(redright4_txt, 15, 10000, true);
+			robotDevices.chassis.waitUntilDone();
+			break;
+		case 4:
+			robotDevices.liftMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
+			robotDevices.chassis.setPose(-62.605, -7.301, 320);
 			robotDevices.frontLeftMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
 			robotDevices.frontRightMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
 			robotDevices.upperLeftMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
@@ -384,208 +298,72 @@ void autonomous() {
 			robotDevices.lowerRightMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
 			robotDevices.liftMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
 
-			// Move arm back
-			c::motor_move(12, 127);
-			delay(50);
-			c::motor_move(12, 0);
-
-			// Align with alliance stake
-			robotDevices.chassis.follow(RedRightStep1_txt, 15, 10000, false);
-			robotDevices.chassis.waitUntilDone();
-
-			// Face alliance stake
-			robotDevices.chassis.turnToHeading(90, 1000);
-			robotDevices.chassis.waitUntilDone();
-			robotDevices.chassis.setPose(-59, -3.75, 90);
-
-			// Approach alliance stake and score
-			robotDevices.chassis.follow(RedRightStep2_txt, 6, 1000, false);
-			robotDevices.chassis.waitUntilDone();
-			c::motor_move(3, 127);
-			c::motor_move(13, 127);
-			delay(500);
-			c::motor_move(3, 0);
-			c::motor_move(13, 0);
-			robotDevices.chassis.setPose(-69, -3.75, -270);
-
-			// Back away from alliance stake
-			robotDevices.chassis.follow(RedRightStep3_txt, 6, 1000, true);
-			robotDevices.chassis.waitUntilDone();
-
-			// Face mobile goal
-			robotDevices.chassis.turnToHeading(-43, 1000);
-			robotDevices.chassis.waitUntilDone();
 			robotDevices.mogoClampPiston.set_value(true);
-			robotDevices.chassis.setPose(-69, -3.75, -43);
-
-			// Approach mobile goal and clamp
-			robotDevices.chassis.follow(RedRightStep4_txt, 15, 1000, false);
+			c::motor_move(16, 127);
+			c::motor_move(7, -127);
+			delay(700);
+			c::motor_move(16, -127);
+			c::motor_move(7, 127);
+		    delay(700);
+			robotDevices.chassis.follow(skills1_txt, 15, 5000, false);
 			robotDevices.chassis.waitUntilDone();
-			delay(400);
 			robotDevices.mogoClampPiston.set_value(false);
-			delay(400);
-
-			// Face stack of rings
-			robotDevices.chassis.turnToHeading(175, 1000);
-			robotDevices.chassis.waitUntilDone();
-			robotDevices.chassis.setPose(-45.491, -28, 175);
-
-			// Intake stack of rings
-			c::motor_move(3, 127);
-			c::motor_move(13, 127);
-			robotDevices.chassis.follow(RedRightStep5_txt, 15, 1000, true);
-			robotDevices.chassis.waitUntilDone();
 			delay(500);
-			robotDevices.chassis.setPose(-49, -43, -160);
-
-			// Touch ladder for WP
-			robotDevices.chassis.follow(RedRightStep6_txt, 15, 2000, false);
-
-			c::motor_move(12, -127);
-			break;
-		case 4:
-			robotDevices.liftMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
-			c::motor_move(12, 127);
-			delay(50);
-			c::motor_move(12, 0);
-			// Executes the skills autonomous routine by default
-			robotDevices.chassis.setPose(-62, 0, 90);
-			c::motor_move(3, 127);
-			c::motor_move(13, 127);
-
-			delay(300);
-			c::motor_move(3, 0);
-			c::motor_move(13, 0);
-
-			delay(150);
-			robotDevices.chassis.turnToHeading(350, 1000);
+			robotDevices.chassis.turnToHeading(100, 500);
 			robotDevices.chassis.waitUntilDone();
+			c::motor_move(17, -127);
+			robotDevices.chassis.follow(skills2_txt, 15, 5000, true);
+			robotDevices.chassis.waitUntilDone();
+			robotDevices.chassis.turnToHeading(170, 900);
+			robotDevices.chassis.waitUntilDone();
+
+			robotDevices.chassis.follow(skills3_txt, 15, 5000, true);
+			robotDevices.chassis.waitUntilDone();
+			delay(1000);
+			robotDevices.chassis.turnToHeading(250, 900);
+			robotDevices.chassis.waitUntilDone();
+			delay(1000);
+
+			startPrepArmTask();
+			robotDevices.chassis.follow(skills4_txt, 15, 5000, true);
+			robotDevices.chassis.waitUntilDone();
+			delay(3000);
+			c::motor_move(17, 0);
+
+			robotDevices.chassis.turnToHeading(215, 700);
+			robotDevices.chassis.waitUntilDone();
+
+			robotDevices.chassis.follow(skills5_txt, 10, 700, true);
+			robotDevices.chassis.waitUntilDone();
+			c::motor_move(17, 50);
+
+			c::motor_move(16, 127);
+			c::motor_move(7, -127);
+			delay(500);
+			c::motor_move(17, 0);
+
+			c::motor_move(16, -127);
+			c::motor_move(7, 127);
+			delay(600);
+			c::motor_move(16, 0);
+			c::motor_move(7, 0);
+
+			robotDevices.chassis.turnToHeading(310, 2000);
+			robotDevices.chassis.waitUntilDone();
+			c::motor_move(17, -127);
+
+			robotDevices.chassis.follow(skills6_txt, 15, 5000, true);
+			robotDevices.chassis.waitUntilDone();
+			delay(1000);
+			robotDevices.chassis.turnToHeading(170, 2000);
+			robotDevices.chassis.waitUntilDone();
+
+			robotDevices.chassis.turnToHeading(20, 2000);
+			robotDevices.chassis.follow(skills7_txt, 15, 5000, false);
 			robotDevices.mogoClampPiston.set_value(true);
-			robotDevices.chassis.follow(SkillsStep1_txt, 15, 10000, false);
-			robotDevices.chassis.waitUntilDone();
-
-			delay(200);
-			robotDevices.mogoClampPiston.set_value(false);
-			delay(250);
-
-			robotDevices.chassis.turnToHeading(120, 1000);
-			robotDevices.chassis.waitUntilDone();
-  			c::motor_move(3, 127);
-			c::motor_move(13, 127);
-			robotDevices.chassis.setPose(-50, -18, 120);
-
-			robotDevices.chassis.follow(SkillsStep2_txt, 15, 10000, true);
-			robotDevices.chassis.waitUntilDone();
-			robotDevices.chassis.turnToHeading(260, 1000);
-			robotDevices.chassis.waitUntilDone();
-						// Move arm back
-			c::motor_move(12, 127);
-			delay(50);
-			c::motor_move(12, 0);
-
-			robotDevices.chassis.follow(SkillsStep3_txt, 15, 10000, true);
-			robotDevices.chassis.waitUntilDone();
-			robotDevices.chassis.turnToHeading(145, 1000);
-			robotDevices.chassis.waitUntilDone();
-
-			robotDevices.chassis.follow(SkillsStep4_txt, 15, 10000, true);
-			robotDevices.chassis.waitUntilDone();
-			robotDevices.chassis.turnToHeading(75, 1000);
 
 			robotDevices.chassis.waitUntilDone();
-			robotDevices.chassis.follow(SkillsStep5_txt, 20, 10000, true);
-			robotDevices.chassis.waitUntilDone();
-
-			robotDevices.chassis.turnToHeading(45, 1000);
-			robotDevices.chassis.waitUntilDone();
-			robotDevices.chassis.follow(SkillsStep6_txt, 20, 10000, true);
-			robotDevices.chassis.waitUntilDone();
-
-			robotDevices.chassis.follow(SkillsStep7_txt, 20, 6000, false);
-			robotDevices.chassis.waitUntilDone();
-												robotDevices.mogoClampPiston.set_value(true);
-
-			  			c::motor_move(3, -127);
-			c::motor_move(13, -127);
-delay(500);
-  			c::motor_move(3, 127);
-			c::motor_move(13, 127);
-			robotDevices.chassis.follow(SkillsStep8_txt, 20, 8000, true);
-			robotDevices.chassis.waitUntilDone();
-
-			c::motor_move(3, 0);
-			c::motor_move(13, 0);
-			// Move arm back
-			c::motor_move(12, 127);
-			delay(50);
-			c::motor_move(12, 0);
-			robotDevices.chassis.turnToHeading(100, 1000);
-
-
-
-
-
-
-			robotDevices.chassis.waitUntilDone();
-
-									robotDevices.chassis.setPose(-25.71, -21.541, 100);
-
-			robotDevices.chassis.follow(SkillsStep9_txt, 20, 8000, false);//bruh
-						robotDevices.chassis.waitUntilDone();
-						delay(500);
-
-									robotDevices.mogoClampPiston.set_value(false);
-									delay(250);
-												robotDevices.chassis.turnToHeading(90, 1000);
-												  			c::motor_move(3, 127);
-			c::motor_move(13, 127);
-
-									robotDevices.chassis.waitUntilDone();
-			robotDevices.chassis.follow(SkillsStep10_txt, 20, 8000, true);//bruh
-			robotDevices.chassis.waitUntilDone();
-			robotDevices.chassis.turnToHeading(350, 1000);
-				robotDevices.chassis.waitUntilDone();
-			robotDevices.chassis.follow(SkillsStep11_txt, 20, 8000, true);//bruh
-			robotDevices.chassis.waitUntilDone();
-												robotDevices.chassis.turnToHeading(260, 1000);
-																robotDevices.chassis.waitUntilDone();
-
-									robotDevices.chassis.setPose(-23.768, 43.834, 260);
-
-			robotDevices.chassis.follow(SkillsStep12_txt, 20, 8000, true);//bruh
-				robotDevices.chassis.waitUntilDone();
-												robotDevices.chassis.turnToHeading(25, 1000);
-							robotDevices.chassis.waitUntilDone();
-			robotDevices.chassis.follow(SkillsStep13_txt, 20, 2000, true);//bruh
-
-							robotDevices.chassis.waitUntilDone();
-												robotDevices.chassis.turnToHeading(100, 1000);
-							robotDevices.chassis.waitUntilDone();
-										robotDevices.chassis.follow(SkillsStep14_txt, 20, 1000, false);//bruh
-							robotDevices.chassis.waitUntilDone();
-										  			c::motor_move(3, -127);
-			c::motor_move(13, -127);
-												robotDevices.mogoClampPiston.set_value(true);
-									robotDevices.chassis.setPose(-58.074, 61.958, 100);
-										robotDevices.chassis.follow(SkillsStep15_txt, 20, 5000, true);//bruh
-																	robotDevices.chassis.waitUntilDone();
-												robotDevices.mogoClampPiston.set_value(false);
-
-												robotDevices.chassis.turnToHeading(180, 1000);
-																													robotDevices.chassis.waitUntilDone();
-
-																						robotDevices.chassis.follow(SkillsStep16_txt, 20, 2000, false);//bruh
-																													robotDevices.chassis.waitUntilDone();
-																						robotDevices.chassis.follow(SkillsStep17_txt, 20, 5000, true);//bruh
-
-
-
-
-
-
-
-
-
+			robotDevices.chassis.follow(skills8_txt, 15, 5000, true);
 			break;
 	}
 }
@@ -623,16 +401,9 @@ void MogoClampDriverControl() {
 
 	// Check if the Y button is pressed on the controller.
 	// If pressed, activate the clamp to secure the mobile goal.
-	if (master.get_digital(E_CONTROLLER_DIGITAL_Y)) {
-    	robotDevices.mogoClampPiston.set_value(true);
-	}
+	if (master.get_digital(E_CONTROLLER_DIGITAL_L1)) { robotDevices.mogoClampPiston.set_value(true);  } 
+	else  											 { robotDevices.mogoClampPiston.set_value(false); }
 
-	// Check if the Right button is pressed on the controller.
-	// If pressed, deactivate the clamp to release the mobile goal.
-	if (master.get_digital(E_CONTROLLER_DIGITAL_RIGHT)) {
-    	robotDevices.mogoClampPiston.set_value(false);
-
-	}
 }
 
 /**
@@ -658,40 +429,10 @@ void RingStopperDriverControl() {
 }
 
 
-
-// Prep Arm Function
-void prepArm() {
-	while (robotDevices.liftMotor.get_position() > -295) {
-		c::motor_move(12, -127);
-		pros::delay(10);
-	}
-	c::motor_move(12, 0);
-}
-
-// Score Arm Function
-void scoreArm() {
-	while (robotDevices.liftMotor.get_position() > -1450) {
-		c::motor_move(7, -127);
-		pros::delay(10);
-	}
-	c::motor_move(7, 0);
-	pros::delay(250);
-	while (robotDevices.liftMotor.get_position() < 0) {
-		c::motor_move(7, 127);
-		pros::delay(10);
-	}
-	c::motor_move(12, 0);
-}
-
-// Wrapper functions to start tasks
-void startPrepArmTask() {
-	pros::Task prepArmTask(prepArm);
-}
-
-void startScoreArmTask() {
-	pros::Task scoreArmTask(scoreArm);
-}
-
+int pressCount = 1;
+bool lastButtonState = false;
+bool isPressed = false;
+bool wasPressed = false;
 
 /**
  * @brief Manages the high stake lift controls during the Driver Control period.
@@ -703,32 +444,40 @@ void startScoreArmTask() {
  */
 void LiftDriverControl() {
 
+	bool isPressed = master.get_digital(E_CONTROLLER_DIGITAL_L2);
 
+	if (isPressed && !wasPressed) {
+		pressCount = (pressCount + 1) % 4;
+		switch(pressCount) {
+			case 0: startPrepArmTask(); break;
+			case 1: startScoreArmTask(); break;
+			case 2: startReturnArmTask(); break;
+			case 3: startrestArm(); break;
+		}
+	}
+
+	wasPressed = isPressed;
 
 	// Check if the L2 button is pressed.
 	// If pressed, command the lift to rise.
-	if (master.get_digital(E_CONTROLLER_DIGITAL_L1)) {
-			// Create threads to run prepArm and scoreArm asynchronously
-			c::motor_move(7, -127);
-
-
-	// Detach threads so they run independently
+	if (master.get_digital(E_CONTROLLER_DIGITAL_Y)) {
+		// Create threads to run prepArm and scoreArm asynchronously
+		c::motor_move(7, -127);
+		c::motor_move(16, 127);
 	}
 	// Check if the L1 button is pressed.
 	// If pressed and L2 is not pressed, command the lift to lower.
-	else if (master.get_digital(E_CONTROLLER_DIGITAL_L2)) {
-			// Create threads to run prepArm and scoreArm asynchronously
-			c::motor_move(7, 127);
-
-
-	// Detach threads so they run independently
+	else if (master.get_digital(E_CONTROLLER_DIGITAL_RIGHT)) {
+		// Create threads to run prepArm and scoreArm asynchronously
+		c::motor_move(7, 127);
+		c::motor_move(16, -127);
 	}
 	// If neither L2 nor L1 is pressed.
 	// Stop the lift to hold it in its current position.
 	else {
-		    robotDevices.liftMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
-
+		robotDevices.liftMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);	
 		c::motor_move(7, 0);
+		c::motor_move(16, 0);
 	}
 }
 
@@ -745,21 +494,21 @@ void IntakeDriverControl() {
 	// Check if the R1 button is pressed.
 	// If pressed, command the intake to spin forward with full power (100%).
 	if (master.get_digital(E_CONTROLLER_DIGITAL_R1)) {
-		 c::motor_move(3, 127);
-		 c::motor_move(17, 127);
+		 c::motor_move(3, -127);
+		 c::motor_move(17, -127);
 
 	} 
 	// Check if the R2 button is pressed.
 	// If pressed and R1 is not pressed, command the intake to spin backward with full power (100%).
 	else if (master.get_digital(E_CONTROLLER_DIGITAL_R2)) {
-		c::motor_move(3, -127);
-		c::motor_move(17, -127);
+		c::motor_move(3, 127);
+		c::motor_move(17, 127);
 
 	} 
 	// If neither R1 nor R2 is pressed.
 	// Command the intake to stop and coast.
 	else {
-				c::motor_move(13, 0);
+				c::motor_move(17, 0);
 
 		robot.intake.StopIntake();
 	}
@@ -772,6 +521,27 @@ void IntakeDriverControl() {
  * It handles the control of the drivetrain, mobile goal clamp, lift, and intake systems.
  */
 void opcontrol() {
+	ui.DisplayMatchImage();
+
+/*		pros::lcd::initialize(); // initialize brain screen
+    robotDevices.chassis.calibrate(); // calibrate sensors
+    // print position to brain screen
+    pros::Task screen_task([&]() {
+        while (true) {
+            // print robot location to the brain screen
+            pros::lcd::print(0, "X: %f", robotDevices.chassis.getPose().x); // x
+            pros::lcd::print(1, "Y: %f", robotDevices.chassis.getPose().y); // y
+            pros::lcd::print(2, "Theta: %f", robotDevices.chassis.getPose().theta); // heading
+            // delay to save resources
+            pros::delay(20);
+        }
+    });
+
+	
+*/
+
+			colorSortBlue = true;
+robotDevices.liftRotation.set_position(359);
 
 	robotDevices.frontLeftMotor.set_brake_mode(E_MOTOR_BRAKE_COAST);
 	robotDevices.frontRightMotor.set_brake_mode(E_MOTOR_BRAKE_COAST);
@@ -779,6 +549,8 @@ void opcontrol() {
 	robotDevices.lowerLeftMotor.set_brake_mode(E_MOTOR_BRAKE_COAST);
 	robotDevices.upperRightMotor.set_brake_mode(E_MOTOR_BRAKE_COAST);
 	robotDevices.lowerRightMotor.set_brake_mode(E_MOTOR_BRAKE_COAST);
+
+
 
 	/*
     pros::lcd::initialize(); // initialize brain screen
@@ -800,10 +572,30 @@ void opcontrol() {
     });
 	*/
    // c::motor_move(3, 100);
+       	robotDevices.optical.set_led_pwm(100);
 
 	// Infinite loop to continuously run operator control tasks.
 	while (true) {
-       
+		/*
+		double hue = robotDevices.optical.get_hue();
+		if (robotDevices.optical.get_proximity() > 75) {
+		if (colorSortBlue) 
+		{
+			if ((hue >=0 && hue <= 20) || (hue >=340 && hue <= 360)) {
+					//delay(50);
+
+				startEjectTask();
+			}
+		} else {
+			if (hue >=120 && hue <= 200) {
+					//delay(50);
+
+				startEjectTask();
+			}
+		}
+		}*/
+
+	
 		// Call function to handle drivetrain controls based on joystick input.
 		DrivetrainDriverControl();
 		

@@ -1,4 +1,6 @@
 #include "Robot_Config.h"
+#include "pros/optical.hpp"
+
 using namespace pros;
 
 // Constructor for global device configuration
@@ -27,14 +29,14 @@ Robot_Config::Robot_Config() :
         // None yet
 
     // V5 SENSORS
-
+optical(1),
         // Inertial sensor
         imu(12),
 
         // Rotation sensors for odometry
         trackingPodHorizontal(6, true),
-        trackingPodVertical(5, true),
-        liftRotation(21, false),
+        trackingPodVertical(5, false),
+        liftRotation(15, false),
 
     // SUBSYSTEM MOTORS
 
@@ -77,7 +79,7 @@ Robot_Config::Robot_Config() :
 
         // Lateral PID controller constructor
         lateralController (6, // proportional gain (kP)
-                           0, // integral gain (kI)
+                           0.1, // integral gain (kI)
                            0.5, // derivative gain (kD)
                            3, // anti windup
                            1, // small error range, in inches
@@ -89,7 +91,7 @@ Robot_Config::Robot_Config() :
 
         // Angular PID controller constructor
         angularController( 1.05, // proportional gain (kP)
-                           0, // integral gain (kI)
+                           0.2, // integral gain (kI)
                            0.25, // derivative gain (kD)
                            3, // anti windup
                            1, // small error range, in inches
@@ -104,4 +106,3 @@ Robot_Config::Robot_Config() :
         // Robot chassis constructor
         chassis(drivetrain, lateralController, angularController, sensors) 
 {}
-

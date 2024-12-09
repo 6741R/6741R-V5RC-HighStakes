@@ -28,6 +28,10 @@ class Brain_UI {
          */
         static lv_res_t btn_click_action(lv_obj_t* btn);
 
+
+        static void DisplayMatchImage();
+
+
         /**
          * @brief Displays the autonomous mode selection UI on the Brain screen.
          *

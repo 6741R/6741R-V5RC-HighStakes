@@ -3,6 +3,7 @@
 
 // Imports the image data for the field jpeg.
 #include "High_Stakes_Field_Image.h"
+#include "Logo_Image.h"
 
 using namespace pros;
 
@@ -27,6 +28,8 @@ lv_style_t buttonPressedStyle;
 
 // Initialize image object
 LV_IMG_DECLARE(HighStakesFieldImage);
+LV_IMG_DECLARE(LogoImage);
+
 
 /**
  * @brief Callback function for handling button presses.
@@ -62,6 +65,13 @@ lv_res_t Brain_UI::btn_click_action(lv_obj_t * btn) {
 			break;
 	}
 	return LV_RES_OK;
+}
+
+void Brain_UI::DisplayMatchImage() {
+		// Draw field image on the brain screen
+	lv_obj_t * img = lv_img_create(lv_scr_act(), NULL);
+	lv_img_set_src(img, &LogoImage);
+	lv_obj_align(img, NULL, LV_ALIGN_CENTER, 0, 0);
 }
 
 /**
