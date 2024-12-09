@@ -523,7 +523,7 @@ void IntakeDriverControl() {
 void opcontrol() {
 	ui.DisplayMatchImage();
 
-/*		pros::lcd::initialize(); // initialize brain screen
+/*	pros::lcd::initialize(); // initialize brain screen
     robotDevices.chassis.calibrate(); // calibrate sensors
     // print position to brain screen
     pros::Task screen_task([&]() {
@@ -536,12 +536,10 @@ void opcontrol() {
             pros::delay(20);
         }
     });
-
-	
 */
 
-			colorSortBlue = true;
-robotDevices.liftRotation.set_position(359);
+	colorSortBlue = true;
+	robotDevices.liftRotation.set_position(359);
 
 	robotDevices.frontLeftMotor.set_brake_mode(E_MOTOR_BRAKE_COAST);
 	robotDevices.frontRightMotor.set_brake_mode(E_MOTOR_BRAKE_COAST);
@@ -549,30 +547,15 @@ robotDevices.liftRotation.set_position(359);
 	robotDevices.lowerLeftMotor.set_brake_mode(E_MOTOR_BRAKE_COAST);
 	robotDevices.upperRightMotor.set_brake_mode(E_MOTOR_BRAKE_COAST);
 	robotDevices.lowerRightMotor.set_brake_mode(E_MOTOR_BRAKE_COAST);
-
-
-
 	/*
     pros::lcd::initialize(); // initialize brain screen
     robotDevices.chassis.calibrate(); // calibrate sensors
 	while (robotDevices.imu.is_calibrating()) {
 		pros::delay(10);
 	}
-
-    // print position to brain screen
-      pros::Task screen_task([&]() {
-        while (true) {
-            // print robot location to the brain screen
-            pros::lcd::print(0, "X: %f", robotDevices.chassis.getPose().x); // x
-            pros::lcd::print(1, "Y: %f", robotDevices.chassis.getPose().y); // y
-            pros::lcd::print(2, "Theta: %f", robotDevices.chassis.getPose().theta); // heading
-            // delay to save resources
-            pros::delay(20);
-        }
-    });
 	*/
-   // c::motor_move(3, 100);
-       	robotDevices.optical.set_led_pwm(100);
+	
+    robotDevices.optical.set_led_pwm(100);
 
 	// Infinite loop to continuously run operator control tasks.
 	while (true) {
