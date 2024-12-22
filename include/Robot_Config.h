@@ -15,6 +15,7 @@ class Robot_Config {
         // Mogo-clamp sensor
         ADIDigitalOut mogoClampPiston;
         ADIDigitalOut ringStopperPiston;
+        ADIDigitalOut doinker;
 
     // 3-WIRE IN (SENSORS)
 
@@ -22,19 +23,18 @@ class Robot_Config {
 
     // V5 SENSORS
         Optical optical;
-        // Inertial sensor
-        Imu imu;
 
-        // Rotation sensors for odometry
-        Rotation trackingPodVertical;
-        Rotation trackingPodHorizontal;
-        Rotation liftRotation;
+        // Inertial sensors
+        Imu imu;
+        Imu imu2;
 
     // SUBSYSTEM MOTORS
 
         Motor liftMotor;
         Motor intakeMotor;
         Motor intakeMotor2;
+        Rotation liftRotation;
+        lemlib::Chassis chassis;
 
     // DRIVETRAIN MOTORS
 
@@ -54,25 +54,23 @@ class Robot_Config {
 
         // Initialization of the Drivetrain object
         lemlib::Drivetrain drivetrain;
+// horizontal tracking wheel
+lemlib::TrackingWheel horizontal_tracking_wheel;
+// vertical tracking wheel
+lemlib::TrackingWheel vertical_tracking_wheel;
+// horizontal tracking wheel encoder
+pros::Rotation horizontal_encoder;
+// vertical tracking wheel encoder
+pros::Rotation vertical_encoder;
+// odometry settings
+lemlib::OdomSensors sensors;
+    // ENCODERS (in motors, read individually)
 
-    // ODOMETRY OBJECTS
+    // PID CONTROLLERS
 
-        // Tracking wheel objects
-        lemlib::TrackingWheel vertTrackingWheel;
-        lemlib::TrackingWheel horTrackingWheel;
-
-        // Odometry sensors object
-        lemlib::OdomSensors sensors;
-
-        // Lateral PID controller
         lemlib::ControllerSettings lateralController;
-
-        // Angular PID controller
         lemlib::ControllerSettings angularController;
-
-    // CHASSIS 
-    
-        lemlib::Chassis chassis;
+        lemlib::ControllerSettings armPid;
 
     Robot_Config();
 };

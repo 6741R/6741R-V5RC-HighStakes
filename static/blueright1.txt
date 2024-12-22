@@ -1,0 +1,28 @@
+65.233, 5.644, 70.976
+63.359, 6.343, 70.514
+61.485, 7.041, 70.051
+59.611, 7.74, 69.589
+57.737, 8.438, 69.127
+55.863, 9.137, 68.665
+53.989, 9.835, 68.203
+52.115, 10.534, 67.74
+50.24, 11.232, 67.278
+48.366, 11.931, 66.816
+46.492, 12.629, 66.354
+44.618, 13.328, 65.892
+42.744, 14.026, 65.429
+40.87, 14.725, 64.841
+38.996, 15.423, 61.984
+37.122, 16.122, 59
+35.248, 16.82, 59
+33.374, 17.519, 59
+31.5, 18.217, 59
+29.632, 18.914, 0
+29.632, 18.914, 0
+10.892, 25.899, 0
+endData
+90.6
+72
+200
+65.233, 5.644, 47.433, 12.279, 47.433, 12.279, 29.632, 18.914
+#PATH.JERRYIO-DATA {"appVersion":"0.8.3","format":"LemLib v0.5","gc":{"robotWidth":12,"robotHeight":12,"robotIsHolonomic":false,"showRobot":false,"uol":2.54,"pointDensity":2,"controlMagnetDistance":1.968503937007874,"fieldImage":{"displayName":"V5RC 2025 - High Stakes","signature":"V5RC 2025 - High Stakes","origin":{"__type":"built-in"}},"coordinateSystem":"VEX Gaming Positioning System"},"paths":[{"segments":[{"controls":[{"uid":"xvFWCgnaWC","x":65.23290864261286,"y":5.644284216745228,"lock":false,"visible":true,"heading":160,"__type":"end-point"},{"uid":"EFQlqs5ujQ","x":29.63249213791245,"y":18.9135303684972,"lock":false,"visible":true,"heading":110,"__type":"end-point"}],"speedProfiles":[{"uid":"EX6l2KaaRw","xPos":0,"yPos":0.9212120311452845,"followBentRate":true},{"uid":"maCB4f5mQm","xPos":0.6666666666666666,"yPos":0.45901938925214336,"followBentRate":true},{"uid":"Tr9Uz4dfqG","xPos":0.7777777777777778,"yPos":0,"followBentRate":true},{"uid":"0y7nsKddIE","xPos":0.7894736842105263,"yPos":0,"followBentRate":true},{"uid":"syJgxm1kk1","xPos":0.8421052631578947,"yPos":0,"followBentRate":false}],"lookaheadKeyframes":[],"uid":"BorVNgYsjm"}],"pc":{"speedLimit":{"minLimit":{"value":0,"label":"0"},"maxLimit":{"value":127,"label":"127"},"step":1,"from":59,"to":72},"bentRateApplicableRange":{"minLimit":{"value":0,"label":"0"},"maxLimit":{"value":1,"label":"1"},"step":0.001,"from":0,"to":0.445},"maxDecelerationRate":90.6},"name":"Path","uid":"OwDk8mFAxR","lock":false,"visible":true}]}

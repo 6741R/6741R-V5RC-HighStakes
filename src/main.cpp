@@ -35,71 +35,306 @@ void disabled() {
 	// Placeholder
 }
 
-/**
- * @brief Runs when initialized by VEX Field Controller.
- */
-void competition_initialize() {
-	robotDevices.frontLeftMotor.set_brake_mode(E_MOTOR_BRAKE_COAST); robotDevices.frontRightMotor.set_brake_mode(E_MOTOR_BRAKE_COAST);
-	robotDevices.upperLeftMotor.set_brake_mode(E_MOTOR_BRAKE_COAST); robotDevices.lowerLeftMotor.set_brake_mode(E_MOTOR_BRAKE_COAST);
-	robotDevices.upperRightMotor.set_brake_mode(E_MOTOR_BRAKE_COAST); robotDevices.lowerRightMotor.set_brake_mode(E_MOTOR_BRAKE_COAST);
+// Constants for Rotational PID
+const double kP_rot = 1.5;   // Proportional constant
+const float kI_rot = 0.00;   // Integral constant (small to avoid overcorrection)
+const double kD_rot = 1.5;  // Derivative constant (moderate to dampen oscillations)
+const double tolerance_rot = 2.00;  // Tolerance in degrees
+const double integralLimit = 100.0; // Limit to prevent integral windup
+const double minMotorSpeed = 0.05;  // Minimum motor speed to avoid stopping too early
+const double headingOffset = 180.0; // Offset to adjust sensor heading
 
-	robotDevices.liftMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
-	robotDevices.liftMotor.tare_position();
+// Function for rotational PID with timeout
+void rotateToTarget(double targetAngle, unsigned long timeout_ms) {
+    // PID variables
+    double error = 0.0;            // Difference between target and current heading
+    double lastError = 0.0;        // Error from the previous iteration
+    double integral = 0.0;         // Sum of all previous errors (I term)
+    double derivative = 0.0;       // Rate of change of error (D term)
+    double motorPower = 0.0;       // Motor power output
 
-	// Calibrate sensors
-    robotDevices.chassis.calibrate();
-    while (robotDevices.imu.is_calibrating()) {
+    unsigned long startTime = pros::millis();  // Start time to track timeout
+
+    while (true) {
+        // Get current heading from IMUs (average their readings for better accuracy)
+        double currentHeading = (robotDevices.imu.get_heading() + robotDevices.imu2.get_heading()) / 2;
+
+        // Adjust for offset
+        currentHeading = fmod(currentHeading + headingOffset, 360.0);
+
+        // Calculate error
+        error = targetAngle - currentHeading;
+
+        // Wrap error to the shortest path (-180° to 180°)
+        if (error > 180) error -= 360;
+        if (error < -180) error += 360;
+
+        // Calculate PID components
+        integral += error;  // Integral term
+        if (integral > integralLimit) integral = integralLimit;  // Limit integral to prevent windup
+        if (integral < -integralLimit) integral = -integralLimit;
+
+        // Calculate the derivative term
+        derivative = error - lastError;
+
+        // Reduce the effect of the proportional gain as we get closer to the target (adaptive damping)
+        double distance = std::abs(error);
+        double dampingFactor = 1.0 - std::min(distance / 180.0, 1.0);  // Damping increases as we approach the target
+
+        // Apply PID formula with adaptive damping factor
+        motorPower = (kP_rot * error * dampingFactor) + (kI_rot * integral) + (kD_rot * derivative);
+
+        // Ensure motor power does not fall below the minimum speed
+        if (std::abs(motorPower) < minMotorSpeed && std::abs(error) > tolerance_rot) {
+            motorPower = std::copysign(minMotorSpeed, motorPower);
+        }
+
+        // Constrain motor power to prevent overshooting
+        motorPower = std::clamp(motorPower, -100.0, 100.0);
+
+        // Set motor powers for rotation
+        robotDevices.leftMotors.move(-motorPower); // Negative power for counter rotation
+        robotDevices.rightMotors.move(motorPower);
+
+        // Update last error
+        lastError = error;
+        pros::lcd::set_text(1, "Error: " + std::to_string(error));
+
+        // Check if the error is within tolerance
+        if (std::abs(error) <= tolerance_rot) {
+            break;  // Exit loop if within tolerance
+        }
+
+        // Check if timeout has been reached
+        if (pros::millis() - startTime > timeout_ms) {
+            pros::lcd::set_text(1, "Timeout reached!");  // Display timeout message
+            break;  // Exit loop if timeout exceeded
+        }
+
+        // Delay for stability
         pros::delay(10);
     }
 
-	// Draws autonomous selector UI on the Brain using LVGL,
-	// an industry standard micro-controller screen UI library.
-	ui.DisplayAutonSelectorUI();
+    // Stop motors after rotation
+    robotDevices.leftMotors.move(0);
+    robotDevices.rightMotors.move(0);
+}
+
+//swing to heading(weston is trying to cook)
+//void swingToHeading(float theta, DriveSide lockedside, int timeout_ms, SwingToHeadingParams params = {}, bool async = true)
+
+// Constants for Linear PID
+const double kP_distance = 8.00;   // Proportional constant for distance
+const double kI_distance = 0.0;    // Integral constant for distance (avoid overcorrection)
+const double kD_distance = 0.00;    // Derivative constant for distance
+const double kP_heading = 0.50;     // Proportional constant for heading correction
+const double kI_heading = 0.0;     // Integral constant for heading correction
+const double kD_heading = 0.00;    // Derivative constant for heading correction
+const double tolerance_distance = 0.5;  // Tolerance in inches for distance
+const double tolerance_heading = 2.0;   // Tolerance in degrees for heading
+const double integralLimit2 = 100.0; // Limit to prevent integral windup
+const double minMotorSpeed2 = 10.0;  // Minimum motor speed to avoid stopping too early
+const double wheelDiameter = 3.25;  // Diameter of the wheels in inches
+const double gearRatio = 48.0 / 36.0; // Gear ratio for the drivetrain
+
+// Function for linear movement PID with heading correction
+void moveToDistance(double targetDistanceInches, unsigned long timeout_ms, double maxSpeed) {
+    // PID variables for distance
+    double errorDistance = 0.0;
+    double lastErrorDistance = 0.0;
+    double integralDistance = 0.0;
+    double derivativeDistance = 0.0;
+    double motorPowerDistance = 0.0;
+
+    // PID variables for heading correction
+    double errorHeading = 0.0;
+    double lastErrorHeading = 0.0;
+    double integralHeading = 0.0;
+    double derivativeHeading = 0.0;
+    double motorPowerHeading = 0.0;
+
+    // Calculate wheel circumference
+    double wheelCircumference = M_PI * wheelDiameter;  // Circumference in inches
+
+    // Get counts per revolution for encoders based on gear ratio and wheel circumference
+    double countsPerRevolution = 360.0 * gearRatio;  // Assuming encoder gives 360 counts per revolution
+    double distancePerCount = wheelCircumference / countsPerRevolution;
+
+    robotDevices.frontLeftMotor.tare_position();
+    robotDevices.lowerLeftMotor.tare_position();
+    robotDevices.upperLeftMotor.tare_position();
+
+    robotDevices.frontRightMotor.tare_position();
+    robotDevices.lowerRightMotor.tare_position();
+    robotDevices.upperRightMotor.tare_position();
+
+    // Get start time to track timeout
+    unsigned long startTime = pros::millis();
+
+    // Initialize encoder positions
+    double initialEncoderPosition = (robotDevices.frontLeftMotor.get_position() + robotDevices.frontRightMotor.get_position() +
+                                     robotDevices.upperLeftMotor.get_position() + robotDevices.upperRightMotor.get_position() +
+                                     robotDevices.lowerLeftMotor.get_position() + robotDevices.lowerRightMotor.get_position()) / 6.0;
+
+    // Record the initial heading at the start of the movement
+    double initialHeading = (robotDevices.imu.get_heading() + robotDevices.imu2.get_heading()) / 2.0;
+
+    while (true) {
+        // Get current encoder position (average of all encoders)
+        double currentEncoderPosition = (robotDevices.frontLeftMotor.get_position() + robotDevices.frontRightMotor.get_position() +
+                                         robotDevices.upperLeftMotor.get_position() + robotDevices.upperRightMotor.get_position() +
+                                         robotDevices.lowerLeftMotor.get_position() + robotDevices.lowerRightMotor.get_position()) / 6.0;
+
+        // Calculate distance traveled in inches
+        double currentDistance = (currentEncoderPosition - initialEncoderPosition) * distancePerCount;
+
+        // Calculate error for distance
+        errorDistance = targetDistanceInches - currentDistance;
+
+        // PID calculation for distance
+        integralDistance += errorDistance;
+        if (integralDistance > integralLimit2) integralDistance = integralLimit2;
+        if (integralDistance < -integralLimit2) integralDistance = -integralLimit2;
+
+        derivativeDistance = errorDistance - lastErrorDistance;
+        motorPowerDistance = (kP_distance * errorDistance) + (kI_distance * integralDistance) + (kD_distance * derivativeDistance);
+
+        // Get current heading
+        double currentHeading = (robotDevices.imu.get_heading() + robotDevices.imu2.get_heading()) / 2.0;
+
+        // Calculate error for heading (maintain the initial heading)
+        errorHeading = initialHeading - currentHeading;  // Target heading is the initial heading
+        if (errorHeading > 180.0) errorHeading -= 360.0;
+        if (errorHeading < -180.0) errorHeading += 360.0;
+
+        // PID calculation for heading correction
+        integralHeading += errorHeading;
+        if (integralHeading > integralLimit2) integralHeading = integralLimit2;
+        if (integralHeading < -integralLimit2) integralHeading = -integralLimit2;
+
+        derivativeHeading = errorHeading - lastErrorHeading;
+        motorPowerHeading = (kP_heading * errorHeading) + (kI_heading * integralHeading) + (kD_heading * derivativeHeading);
+
+        // Apply the heading correction to the motor power
+        double motorPowerLeft = motorPowerDistance + motorPowerHeading;
+        double motorPowerRight = motorPowerDistance - motorPowerHeading;
+
+        // Constrain motor power to the min/max range and scale by maxSpeed
+        motorPowerLeft = std::clamp(motorPowerLeft, -maxSpeed, maxSpeed);
+        motorPowerRight = std::clamp(motorPowerRight, -maxSpeed, maxSpeed);
+
+        // Set motor speeds for both sides
+        robotDevices.leftMotors.move(motorPowerLeft);
+        robotDevices.rightMotors.move(motorPowerRight);
+
+        // Update last errors
+        lastErrorDistance = errorDistance;
+        lastErrorHeading = errorHeading;
+
+        // Print the error values to the controller's screen using master.print
+        master.print(0, 0, "Dist: %.2f", currentDistance);
+        master.print(1, 0, "Heading: %.2f", errorHeading);
+
+        // Check if distance target is reached or timeout occurred
+        if (std::abs(errorDistance) <= tolerance_distance) {
+            break;
+        }
+
+        // Check if timeout has been reached
+        if (pros::millis() - startTime > timeout_ms) {
+            master.print(0, 0, "Timeout reached!");  // Display timeout message
+            break;
+        }
+
+        // Delay for stability
+        pros::delay(10);
+    }
+
+    // Stop motors after movement
+    robotDevices.leftMotors.move(0);
+    robotDevices.rightMotors.move(0);
 }
 
 
 
-// Prep Arm Function
+
+// Constants for PID
+const double tolerance = 200.0;
+const double kP = 0.035;   // Proportional constant
+const double kI = 0;  // Integral constant
+const double kD = 0;   // Derivative constant
+
+// Target position in ticks
+const double targetPosition = -3300;
+
+// Maximum and minimum motor power limits
+const int maxPower = 100;
+const int minPower = -100;
+
+// Prep Arm Function with PID Controller
 void prepArm() {
-	c::motor_set_brake_mode(7, E_MOTOR_BRAKE_HOLD); c::motor_set_brake_mode(16, E_MOTOR_BRAKE_HOLD);
-	while (robotDevices.liftRotation.get_position() > -2400) {
-		c::motor_move(7, -90); c::motor_move(16, 90);
-		pros::delay(10);
-	}
-	c::motor_move(7, 0); c::motor_move(16, 0);
+    // Set brake modes
+    c::motor_set_brake_mode(19, E_MOTOR_BRAKE_HOLD);
+    c::motor_set_brake_mode(17, E_MOTOR_BRAKE_HOLD);
+
+    // PID variables
+    double error = 0.0;            // Difference between target and current position
+    double lastError = 0.0;        // Error from the previous loop
+    double integral = 0.0;         // Sum of all previous errors (I term)
+    double derivative = 0.0;       // Rate of change of error (D term)
+    double motorPower = 0.0;       // Motor power output
+
+    while (true) {
+        // Current position of the arm
+        double currentPosition = robotDevices.liftRotation.get_position();
+
+        // Calculate PID components
+        error = targetPosition - currentPosition;            // Proportional term
+        integral += error;                                   // Integral term
+        derivative = error - lastError;                      // Derivative term
+
+        // Compute motor power using PID formula
+        motorPower = (kP * error) + (kI * integral) + (kD * derivative);
+
+        // Constrain motor power to max/min limits
+        motorPower = std::clamp(motorPower, (double)minPower, (double)maxPower);
+
+        // Move motors with calculated power
+        c::motor_move(19, motorPower);  // Adjust motor 19
+        c::motor_move(17, -motorPower); // Adjust motor 17 (opposite direction)
+
+        // Break if the arm is within the tolerance range
+        if (fabs(error) <= tolerance) {
+            break;
+        }
+
+        // Update last error
+        lastError = error;
+
+        // Delay to prevent overloading the CPU
+        pros::delay(10);
+    }
+
+    // Stop the motors
+    c::motor_move(19, 0);
+    c::motor_move(17, 0);
 }
 
 // Score Arm Function
 void scoreArm() {
-	c::motor_set_brake_mode(7, E_MOTOR_BRAKE_HOLD); c::motor_set_brake_mode(16, E_MOTOR_BRAKE_HOLD);
-	while (robotDevices.liftMotor.get_position() > -2300) {
-		c::motor_move(17, 50);
-		c::motor_move(7, -90); c::motor_move(16, 90);
+
+		c::motor_set_brake_mode(19, E_MOTOR_BRAKE_HOLD); c::motor_set_brake_mode(17, E_MOTOR_BRAKE_HOLD);
+	while (robotDevices.liftRotation.get_position() > -22000) {
+			c::motor_move(18, 50);
+
+		c::motor_move(19, -90); c::motor_move(17, 90);
 		pros::delay(10);
 	}
-	c::motor_move(17, 0);
-	c::motor_move(7, 0); c::motor_move(16, 0);
+	c::motor_move(19, 0); c::motor_move(17, 0);
+
+	c::motor_move(18, 0);
 }
 
-// Score Arm Function
-void returnArm() {
-	c::motor_set_brake_mode(7, E_MOTOR_BRAKE_HOLD); c::motor_set_brake_mode(16, E_MOTOR_BRAKE_HOLD);
-	while (robotDevices.liftMotor.get_position() < -600) {
-		c::motor_move(7, 90); c::motor_move(16, -90);
-		pros::delay(10);
-	}
-	c::motor_move(7, 0); c::motor_move(16, 0);
-}
-
-// Score Arm Function
-void restArm() {
-	c::motor_set_brake_mode(7, E_MOTOR_BRAKE_HOLD); c::motor_set_brake_mode(16, E_MOTOR_BRAKE_HOLD);
-	while (robotDevices.liftMotor.get_position() < -100) {
-		c::motor_move(7, 90); c::motor_move(16, -90);
-		pros::delay(10);
-	}
-	c::motor_move(7, 0); c::motor_move(16, 0);
-}
 
 void ejectRing() {
 	c::motor_move(17, 0);
@@ -111,31 +346,10 @@ void startPrepArmTask() { pros::Task prepArmTask(prepArm); }
 
 void startScoreArmTask() { pros::Task scoreArmTask(scoreArm); }
 
-void startReturnArmTask() { pros::Task returnArmTask(returnArm); }
-
-void startrestArm() { pros::Task restArmTask(restArm); }
-
 void startEjectTask() { pros::Task ejectTask(ejectRing); }
 
 /*** @brief Load paths. */
-ASSET(bluelefty_txt);
-ASSET(blueleft2_txt);
-ASSET(blueleft3_txt);
-ASSET(blueleft4_txt);
 
-ASSET(redrighty_txt);
-ASSET(redright2_txt);
-ASSET(redright3_txt);
-ASSET(redright4_txt);
-
-ASSET(skills1_txt);
-ASSET(skills2_txt);
-ASSET(skills3_txt);
-ASSET(skills4_txt);
-ASSET(skills5_txt);
-ASSET(skills6_txt);
-ASSET(skills7_txt);
-ASSET(skills8_txt);
 
 bool colorSortBlue = false;
 /**
@@ -147,7 +361,7 @@ void autonomous() {
 // Retrieve the selected autonomous mode from the BrainUI.
 	int selectedMode = ui.selectedAuton;
 	
-	selectedMode = 3;
+	selectedMode = 0;
 	// Blue Right - 0
 	// Blue Left - 1
 	// Red left - 2
@@ -156,216 +370,66 @@ void autonomous() {
 	// Determine which autonomous routine to execute based on the selected mode.
 	switch(selectedMode) {
 		case 0:
-			colorSortBlue = true;
-			// Executes the autonomous routine for the Blue Alliance, Right side.
-			// Set initial position
-			robotDevices.chassis.setPose(65, -7, 10);
-			robotDevices.frontLeftMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
-			robotDevices.frontRightMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
-			robotDevices.upperLeftMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
-			robotDevices.lowerLeftMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
-			robotDevices.upperRightMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
-			robotDevices.lowerRightMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
-			robotDevices.liftMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
-			
+		rotateToTarget(275, 900);
+		delay(500);
+		moveToDistance(14.0, 1800, 20);
+		delay(500);
+				moveToDistance(-12.0, 60000, 127);
+
+			//rotateToTarget(170, 2000);
+		//	delay(500);
+
+		//	rotateToTarget(10, 2000);
+		//	delay(500);
+						//rotateToTarget(260, 2000);
+
+
+			/*rotateToTarget(270);
+									delay(500);
+
+			rotateToTarget(180);*/
+
+
 			break;
 		case 1:
-			colorSortBlue = true;
-			// Executes the autonomous routine for the Blue Alliance, Left side.
-			// Set initial position
-			robotDevices.chassis.setPose(65, -7, 10);
-			robotDevices.frontLeftMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
-			robotDevices.frontRightMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
-			robotDevices.upperLeftMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
-			robotDevices.lowerLeftMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
-			robotDevices.upperRightMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
-			robotDevices.lowerRightMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
-			robotDevices.liftMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
-			c::motor_move(7, -127);
-			c::motor_move(16, 127);
-			delay(800);
-			c::motor_move(7, 127);
-			c::motor_move(16, -127);
-			delay(1000);
-			c::motor_move(7, 0);
-			c::motor_move(16, 0);
-			robotDevices.mogoClampPiston.set_value(true);
-			robotDevices.chassis.follow(bluelefty_txt, 15, 10000, false);
-			robotDevices.chassis.waitUntilDone();
-			delay(100);
-			robotDevices.mogoClampPiston.set_value(false);
-						delay(250);
 
-			c::motor_move(17, -127);
-			robotDevices.chassis.turnToHeading(180, 2000);
-			robotDevices.chassis.follow(blueleft2_txt, 15, 5000, true);
-			robotDevices.chassis.waitUntilDone();
-			delay(1250);
-			c::motor_move(17, 0);
-			robotDevices.chassis.turnToHeading(330, 2000);
-			c::motor_move(17, -127);
-			robotDevices.ringStopperPiston.set_value(true);
-			delay(20);
-            robotDevices.chassis.follow(blueleft3_txt, 15, 10000, true);
-			robotDevices.chassis.waitUntilDone();
-			delay(500);
-			robotDevices.ringStopperPiston.set_value(false);
-			delay(350);
-
-            robotDevices.chassis.turnToHeading(270, 1000);
-			delay(100);
-            robotDevices.chassis.follow(blueleft4_txt, 15, 10000, true);
-			robotDevices.chassis.waitUntilDone();
-			c::motor_move(16, 127);
-			c::motor_move(7, -127);
-		    delay(700);
-			c::motor_move(16, 0);
-			c::motor_move(7, 0);
 			break;
 		case 2:
-			colorSortBlue = false;
-			// Executes the autonomous routine for the Red Alliance, Left side.
-			// Set initial position
-			robotDevices.chassis.setPose(-52, 23, -90);
-			robotDevices.frontLeftMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
-			robotDevices.frontRightMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
-			robotDevices.upperLeftMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
-			robotDevices.lowerLeftMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
-			robotDevices.upperRightMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
-			robotDevices.lowerRightMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
-			robotDevices.liftMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
+		
 			break;
 		case 3:
-			// Executes the autonomous routine for the Blue Alliance, Left side.
-			// Set initial position
-			robotDevices.chassis.setPose(-65.88, -7.301, 350);
-			robotDevices.frontLeftMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
-			robotDevices.frontRightMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
-			robotDevices.upperLeftMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
-			robotDevices.lowerLeftMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
-			robotDevices.upperRightMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
-			robotDevices.lowerRightMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
-			robotDevices.liftMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
-			c::motor_move(7, -127);
-			c::motor_move(16, 127);
-			delay(800);
-			c::motor_move(7, 127);
-			c::motor_move(16, -127);
-			delay(1000);
-			c::motor_move(7, 0);
-			c::motor_move(16, 0);
-			robotDevices.mogoClampPiston.set_value(true);
-			robotDevices.chassis.follow(redrighty_txt, 15, 10000, false);
-			robotDevices.chassis.waitUntilDone();
-			delay(100);
-			robotDevices.mogoClampPiston.set_value(false);
-						delay(200);
-
-			c::motor_move(17, -127);
-			robotDevices.chassis.turnToHeading(180, 2000);
-			robotDevices.chassis.follow(redright2_txt, 15, 5000, true);
-			robotDevices.chassis.waitUntilDone();
-			delay(1250);
-			c::motor_move(17, 0);
-			robotDevices.chassis.turnToHeading(330, 2000);
-			c::motor_move(17, -127);
-			robotDevices.ringStopperPiston.set_value(true);
-			delay(20);
-            robotDevices.chassis.follow(redright3_txt, 15, 10000, true);
-			robotDevices.chassis.waitUntilDone();
-			delay(500);
-			robotDevices.ringStopperPiston.set_value(false);
-			delay(350);
-
-            robotDevices.chassis.turnToHeading(90, 1000);
-			delay(100);
-						c::motor_move(16, 127);
-			c::motor_move(7, -127);
-		    delay(400);
-			c::motor_move(16, 0);
-			c::motor_move(7, 0);
-            robotDevices.chassis.follow(redright4_txt, 15, 10000, true);
-			robotDevices.chassis.waitUntilDone();
+			
 			break;
 		case 4:
-			robotDevices.liftMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
-			robotDevices.chassis.setPose(-62.605, -7.301, 320);
-			robotDevices.frontLeftMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
-			robotDevices.frontRightMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
-			robotDevices.upperLeftMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
-			robotDevices.lowerLeftMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
-			robotDevices.upperRightMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
-			robotDevices.lowerRightMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
-			robotDevices.liftMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
-
-			robotDevices.mogoClampPiston.set_value(true);
-			c::motor_move(16, 127);
-			c::motor_move(7, -127);
-			delay(700);
-			c::motor_move(16, -127);
-			c::motor_move(7, 127);
-		    delay(700);
-			robotDevices.chassis.follow(skills1_txt, 15, 5000, false);
-			robotDevices.chassis.waitUntilDone();
-			robotDevices.mogoClampPiston.set_value(false);
-			delay(500);
-			robotDevices.chassis.turnToHeading(100, 500);
-			robotDevices.chassis.waitUntilDone();
-			c::motor_move(17, -127);
-			robotDevices.chassis.follow(skills2_txt, 15, 5000, true);
-			robotDevices.chassis.waitUntilDone();
-			robotDevices.chassis.turnToHeading(170, 900);
-			robotDevices.chassis.waitUntilDone();
-
-			robotDevices.chassis.follow(skills3_txt, 15, 5000, true);
-			robotDevices.chassis.waitUntilDone();
-			delay(1000);
-			robotDevices.chassis.turnToHeading(250, 900);
-			robotDevices.chassis.waitUntilDone();
-			delay(1000);
-
-			startPrepArmTask();
-			robotDevices.chassis.follow(skills4_txt, 15, 5000, true);
-			robotDevices.chassis.waitUntilDone();
-			delay(3000);
-			c::motor_move(17, 0);
-
-			robotDevices.chassis.turnToHeading(215, 700);
-			robotDevices.chassis.waitUntilDone();
-
-			robotDevices.chassis.follow(skills5_txt, 10, 700, true);
-			robotDevices.chassis.waitUntilDone();
-			c::motor_move(17, 50);
-
-			c::motor_move(16, 127);
-			c::motor_move(7, -127);
-			delay(500);
-			c::motor_move(17, 0);
-
-			c::motor_move(16, -127);
-			c::motor_move(7, 127);
-			delay(600);
-			c::motor_move(16, 0);
-			c::motor_move(7, 0);
-
-			robotDevices.chassis.turnToHeading(310, 2000);
-			robotDevices.chassis.waitUntilDone();
-			c::motor_move(17, -127);
-
-			robotDevices.chassis.follow(skills6_txt, 15, 5000, true);
-			robotDevices.chassis.waitUntilDone();
-			delay(1000);
-			robotDevices.chassis.turnToHeading(170, 2000);
-			robotDevices.chassis.waitUntilDone();
-
-			robotDevices.chassis.turnToHeading(20, 2000);
-			robotDevices.chassis.follow(skills7_txt, 15, 5000, false);
-			robotDevices.mogoClampPiston.set_value(true);
-
-			robotDevices.chassis.waitUntilDone();
-			robotDevices.chassis.follow(skills8_txt, 15, 5000, true);
+		
 			break;
+			
 	}
+}
+
+/**
+ * @brief Runs when initialized by VEX Field Controller.
+ */
+void competition_initialize() {
+	robotDevices.frontLeftMotor.set_brake_mode(E_MOTOR_BRAKE_COAST); robotDevices.frontRightMotor.set_brake_mode(E_MOTOR_BRAKE_COAST);
+	robotDevices.upperLeftMotor.set_brake_mode(E_MOTOR_BRAKE_COAST); robotDevices.lowerLeftMotor.set_brake_mode(E_MOTOR_BRAKE_COAST);
+	robotDevices.upperRightMotor.set_brake_mode(E_MOTOR_BRAKE_COAST); robotDevices.lowerRightMotor.set_brake_mode(E_MOTOR_BRAKE_COAST);
+
+	robotDevices.liftMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
+	robotDevices.liftMotor.tare_position();
+    // Start calibration for both inertial sensors
+    robotDevices.imu.reset();
+    robotDevices.imu2.reset();
+
+    // Wait for calibration to complete
+    while (robotDevices.imu.is_calibrating() || robotDevices.imu2.is_calibrating()) {
+        pros::delay(20); // Allow the system to process
+    }
+
+
+	// Draws autonomous selector UI on the Brain using LVGL,
+	// an industry standard micro-controller screen UI library.
+	ui.DisplayAutonSelectorUI();
 }
 
 /**
@@ -418,13 +482,13 @@ void RingStopperDriverControl() {
 	// Check if the Y button is pressed on the controller.
 	// If pressed, activate the clamp to secure the mobile goal.
 	if (master.get_digital(E_CONTROLLER_DIGITAL_B)) {
-		robot.ringStopper.Lower();
+		 robotDevices.doinker.set_value(true);
 	}
 
 	// Check if the Right button is pressed on the controller.
 	// If pressed, deactivate the clamp to release the mobile goal.
 	if (master.get_digital(E_CONTROLLER_DIGITAL_DOWN)) {
-		robot.ringStopper.Raise();
+		 robotDevices.doinker.set_value(false);
 	}
 }
 
@@ -443,7 +507,7 @@ bool wasPressed = false;
  * - When neither button is pressed, the lift will be held in its current position.
  */
 void LiftDriverControl() {
-
+/*
 	bool isPressed = master.get_digital(E_CONTROLLER_DIGITAL_L2);
 
 	if (isPressed && !wasPressed) {
@@ -456,28 +520,34 @@ void LiftDriverControl() {
 		}
 	}
 
-	wasPressed = isPressed;
+	wasPressed = isPressed;*/
+
+		if (master.get_digital(E_CONTROLLER_DIGITAL_L2)) {
+			startPrepArmTask();
+		}
+
 
 	// Check if the L2 button is pressed.
 	// If pressed, command the lift to rise.
 	if (master.get_digital(E_CONTROLLER_DIGITAL_Y)) {
 		// Create threads to run prepArm and scoreArm asynchronously
-		c::motor_move(7, -127);
-		c::motor_move(16, 127);
+		//startScoreArmTask();
+		c::motor_move(17, -127);
+		
 	}
 	// Check if the L1 button is pressed.
 	// If pressed and L2 is not pressed, command the lift to lower.
 	else if (master.get_digital(E_CONTROLLER_DIGITAL_RIGHT)) {
 		// Create threads to run prepArm and scoreArm asynchronously
-		c::motor_move(7, 127);
-		c::motor_move(16, -127);
+		c::motor_move(17, 127);
+	
 	}
 	// If neither L2 nor L1 is pressed.
 	// Stop the lift to hold it in its current position.
 	else {
 		robotDevices.liftMotor.set_brake_mode(E_MOTOR_BRAKE_HOLD);	
-		c::motor_move(7, 0);
-		c::motor_move(16, 0);
+	 c::motor_move(17, 0);
+		c::motor_move(19, 0);
 	}
 }
 
@@ -494,21 +564,21 @@ void IntakeDriverControl() {
 	// Check if the R1 button is pressed.
 	// If pressed, command the intake to spin forward with full power (100%).
 	if (master.get_digital(E_CONTROLLER_DIGITAL_R1)) {
-		 c::motor_move(3, -127);
-		 c::motor_move(17, -127);
+		 c::motor_move(18, -127);
+		 c::motor_move(5, -127);
 
 	} 
 	// Check if the R2 button is pressed.
 	// If pressed and R1 is not pressed, command the intake to spin backward with full power (100%).
 	else if (master.get_digital(E_CONTROLLER_DIGITAL_R2)) {
-		c::motor_move(3, 127);
-		c::motor_move(17, 127);
+		c::motor_move(5, -127);
 
 	} 
 	// If neither R1 nor R2 is pressed.
 	// Command the intake to stop and coast.
 	else {
-				c::motor_move(17, 0);
+				c::motor_move(18, 0);
+				c::motor_move(5, 0);
 
 		robot.intake.StopIntake();
 	}
@@ -522,8 +592,9 @@ void IntakeDriverControl() {
  */
 void opcontrol() {
 	ui.DisplayMatchImage();
+					 robotDevices.ringStopperPiston.set_value(false);
 
-/*	pros::lcd::initialize(); // initialize brain screen
+	/*pros::lcd::initialize(); // initialize brain screen
     robotDevices.chassis.calibrate(); // calibrate sensors
     // print position to brain screen
     pros::Task screen_task([&]() {
@@ -554,7 +625,7 @@ void opcontrol() {
 		pros::delay(10);
 	}
 	*/
-	
+
     robotDevices.optical.set_led_pwm(100);
 
 	// Infinite loop to continuously run operator control tasks.
@@ -578,7 +649,12 @@ void opcontrol() {
 		}
 		}*/
 
-	
+		if (master.get_digital(E_CONTROLLER_DIGITAL_X)) {
+			
+					 robotDevices.ringStopperPiston.set_value(false);
+
+
+		} 
 		// Call function to handle drivetrain controls based on joystick input.
 		DrivetrainDriverControl();
 		
