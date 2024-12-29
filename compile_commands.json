@@ -313,11 +313,11 @@
             "-funwind-tables",
             "--std=gnu++17",
             "-o",
-            "bin/main.cpp.o",
-            "src\\main.cpp"
+            "bin/Robot_Config.cpp.o",
+            "src\\Robot_Config.cpp"
         ],
         "directory": "C:\\Users\\westo\\OneDrive\\Documents\\GitHub\\6741R-V5RC-HighStakes",
-        "file": "src\\main.cpp"
+        "file": "src\\Robot_Config.cpp"
     },
     {
         "arguments": [
@@ -353,10 +353,10 @@
             "-funwind-tables",
             "--std=gnu++17",
             "-o",
-            "bin/Robot_Config.cpp.o",
-            "src\\Robot_Config.cpp"
+            "bin/main.cpp.o",
+            "src\\main.cpp"
         ],
         "directory": "C:\\Users\\westo\\OneDrive\\Documents\\GitHub\\6741R-V5RC-HighStakes",
-        "file": "src\\Robot_Config.cpp"
+        "file": "src\\main.cpp"
     }
 ]

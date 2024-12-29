@@ -38,10 +38,10 @@ void disabled() {
 // Constants for Rotational PID
 const double kP_rot = 1.5;   // Proportional constant
 const float kI_rot = 0.00;   // Integral constant (small to avoid overcorrection)
-const double kD_rot = 1.5;  // Derivative constant (moderate to dampen oscillations)
+const double kD_rot = 0.05;  // Derivative constant (moderate to dampen oscillations)
 const double tolerance_rot = 2.00;  // Tolerance in degrees
 const double integralLimit = 100.0; // Limit to prevent integral windup
-const double minMotorSpeed = 0.05;  // Minimum motor speed to avoid stopping too early
+const double minMotorSpeed = 10.00;  // Minimum motor speed to avoid stopping too early
 const double headingOffset = 180.0; // Offset to adjust sensor heading
 
 // Function for rotational PID with timeout
@@ -90,7 +90,7 @@ void rotateToTarget(double targetAngle, unsigned long timeout_ms) {
         }
 
         // Constrain motor power to prevent overshooting
-        motorPower = std::clamp(motorPower, -100.0, 100.0);
+        motorPower = std::clamp(motorPower, -127.0, 127.0);
 
         // Set motor powers for rotation
         robotDevices.leftMotors.move(-motorPower); // Negative power for counter rotation
@@ -127,7 +127,7 @@ void rotateToTarget(double targetAngle, unsigned long timeout_ms) {
 const double kP_distance = 8.00;   // Proportional constant for distance
 const double kI_distance = 0.0;    // Integral constant for distance (avoid overcorrection)
 const double kD_distance = 0.00;    // Derivative constant for distance
-const double kP_heading = 0.50;     // Proportional constant for heading correction
+const float kP_heading = 0.000001;     // Proportional constant for heading correction
 const double kI_heading = 0.0;     // Integral constant for heading correction
 const double kD_heading = 0.00;    // Derivative constant for heading correction
 const double tolerance_distance = 0.5;  // Tolerance in inches for distance
@@ -301,7 +301,7 @@ void prepArm() {
 
         // Move motors with calculated power
         c::motor_move(19, motorPower);  // Adjust motor 19
-        c::motor_move(17, -motorPower); // Adjust motor 17 (opposite direction)
+        c::motor_move(17, motorPower); // Adjust motor 17 (opposite direction)
 
         // Break if the arm is within the tolerance range
         if (fabs(error) <= tolerance) {
@@ -370,36 +370,132 @@ void autonomous() {
 	// Determine which autonomous routine to execute based on the selected mode.
 	switch(selectedMode) {
 		case 0:
-		rotateToTarget(275, 900);
-		delay(500);
-		moveToDistance(14.0, 1800, 20);
-		delay(500);
-				moveToDistance(-12.0, 60000, 127);
+        c::motor_set_brake_mode(17, E_MOTOR_BRAKE_HOLD);
+			
+            
+            c::motor_move(18, -127);
+                    delay(200);
+                    c::motor_move(18, 0);
+            
+            moveToDistance(5.0, 700, 127);
+                    rotateToTarget(255, 700);
+                    delay(1);
+            
+            robotDevices.mogoClampPiston.set_value(true);
+                   moveToDistance(-25.0, 700, 127); 
+                   robotDevices.mogoClampPiston.set_value(false);
 
-			//rotateToTarget(170, 2000);
-		//	delay(500);
+            rotateToTarget(345, 600);
+                    c::motor_move(5, -127);
+                    c::motor_move(18, -127);
+                    moveToDistance(10, 1000, 127);
 
-		//	rotateToTarget(10, 2000);
-		//	delay(500);
-						//rotateToTarget(260, 2000);
+            rotateToTarget(30, 600);
+                   moveToDistance(30, 1000, 127); 
+                   rotateToTarget(320, 600);
+                   moveToDistance(25, 1000, 127); 
+            
+            rotateToTarget(80, 800);
+                   c::motor_move(17, -127);
+                    delay(200);
+                    c::motor_move(17, 0);
+                  moveToDistance(20, 1000, 127); 
+                  delay(500);
+                  c::motor_move(18, 0);
+
+            rotateToTarget(180, 700);
+                    moveToDistance(20, 1500, 127);
+                    rotateToTarget(90, 650);
+                    moveToDistance(10, 1000, 127);
 
 
-			/*rotateToTarget(270);
-									delay(500);
-
-			rotateToTarget(180);*/
-
-
+              
 			break;
-		case 1:
-
-			break;
+        case 1:
+        c::motor_move(5, -127);
+                moveToDistance(30.0, 60000, 127);
+                rotateToTarget(10, 1000);
+                delay(1);
+                moveToDistance(11.0, 60000, 110);
+                delay(1);
+                rotateToTarget(73, 1000);
+                delay(10);
+                c::motor_move(18, -127);
+                delay(300);
+                c::motor_move(18, 0);
+                moveToDistance(10.0, 60000, 127);
+            break;
 		case 2:
 		
 			break;
 		case 3:
+         moveToDistance(31.0, 2800, 127);
+                     rotateToTarget(340, 600);
+                delay(1);            
+                
+                robotDevices.doinker.set_value(true); 
+                delay(100);
+                
+                moveToDistance(-10.0, 1000, 127);
+                        delay(1);
+                        robotDevices.doinker.set_value(false);
+                        delay(1); 
+                delay(200);
+
+                rotateToTarget(200, 700);
+                rotateToTarget(160, 1000);
+                delay(10);
+                robotDevices.mogoClampPiston.set_value(true);
+                delay(200);
+
+                moveToDistance(-12.0, 1000, 127);
+                        delay(1);
+                        robotDevices.mogoClampPiston.set_value(false);
+                        delay(100);
+
+                rotateToTarget(210, 1000);
+                        c::motor_move(5, -127);
+                        moveToDistance(7, 3000, 127);
+                        c::motor_move(18, -127);
+                        delay(400);
+                        c::motor_move(18, 0);
+                        delay(100);
+                        robotDevices.mogoClampPiston.set_value(true);
+            
+                rotateToTarget(80, 1000);
+                        moveToDistance(-15.0, 1000, 127);
+                        robotDevices.mogoClampPiston.set_value(false);
+                        delay(300);
+                        c::motor_move(5, -127);
+                        c::motor_move(18, -127);
+
+                rotateToTarget(130, 700);
+                rotateToTarget(225, 700);
+                        delay(1);
+                        robotDevices.ringStopperPiston.set_value(true);
+                        delay(1);
+                        moveToDistance(20.0, 3000, 127);
+                        delay(1);
+                        robotDevices.ringStopperPiston.set_value(false);
+                        delay(100);
+                        moveToDistance(-7.0, 700, 127);
+                        delay(1);
+                        rotateToTarget(330, 700);
+                        delay(1);
+                        c::motor_move(17, -127);
+
+                        
+
+                
+               
+               
+                
+
 			
+
+
 			break;
+
 		case 4:
 		
 			break;
@@ -426,7 +522,7 @@ void competition_initialize() {
         pros::delay(20); // Allow the system to process
     }
 
-
+   
 	// Draws autonomous selector UI on the Brain using LVGL,
 	// an industry standard micro-controller screen UI library.
 	ui.DisplayAutonSelectorUI();
@@ -594,8 +690,8 @@ void opcontrol() {
 	ui.DisplayMatchImage();
 					 robotDevices.ringStopperPiston.set_value(false);
 
-	/*pros::lcd::initialize(); // initialize brain screen
-    robotDevices.chassis.calibrate(); // calibrate sensors
+	//pros::lcd::initialize(); // initialize brain screen
+    /*robotDevices.chassis.calibrate(); // calibrate sensors
     // print position to brain screen
     pros::Task screen_task([&]() {
         while (true) {
@@ -607,10 +703,10 @@ void opcontrol() {
             pros::delay(20);
         }
     });
-*/
+
 
 	colorSortBlue = true;
-	robotDevices.liftRotation.set_position(359);
+	robotDevices.liftRotation.set_position(359);*/
 
 	robotDevices.frontLeftMotor.set_brake_mode(E_MOTOR_BRAKE_COAST);
 	robotDevices.frontRightMotor.set_brake_mode(E_MOTOR_BRAKE_COAST);
@@ -630,8 +726,8 @@ void opcontrol() {
 
 	// Infinite loop to continuously run operator control tasks.
 	while (true) {
-		/*
-		double hue = robotDevices.optical.get_hue();
+		
+		/*double hue = robotDevices.optical.get_hue();
 		if (robotDevices.optical.get_proximity() > 75) {
 		if (colorSortBlue) 
 		{
@@ -656,18 +752,18 @@ void opcontrol() {
 
 		} 
 		// Call function to handle drivetrain controls based on joystick input.
-		DrivetrainDriverControl();
+		//DrivetrainDriverControl();
 		
 		// Call function to manage mobile goal clamp based on button input.
 		MogoClampDriverControl();
 		
 		// Call function to control the lift based on button input.
-		LiftDriverControl();
+		//LiftDriverControl();
 	
 		// Call function to manage the intake system based on button input.
 		IntakeDriverControl();
 
-		RingStopperDriverControl();
+		//RingStopperDriverControl();
 
 		// Small delay to prevent the loop from running too fast
 		// This helps to balance processing load and maintain responsiveness.
