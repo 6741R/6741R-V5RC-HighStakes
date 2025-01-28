@@ -34,7 +34,6 @@ class Robot_Config {
         Motor intakeMotor;
         Motor intakeMotor2;
         Rotation liftRotation;
-        lemlib::Chassis chassis;
 
     // DRIVETRAIN MOTORS
 
@@ -71,6 +70,7 @@ lemlib::OdomSensors sensors;
         lemlib::ControllerSettings lateralController;
         lemlib::ControllerSettings angularController;
         lemlib::ControllerSettings armPid;
+        lemlib::Chassis chassis;
 
     Robot_Config();
 };

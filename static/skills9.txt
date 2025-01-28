@@ -1,13 +1,13 @@
--67.136, -64.262, 42.874
--65.347, -63.368, 36.471
--63.558, -62.473, 28.673
--61.769, -61.579, 17.724
--60.663, -61.026, 0
--60.663, -61.026, 0
--42.775, -52.081, 0
+-53.867, -40.96, 45.826
+-52.713, -42.594, 39.9
+-51.56, -44.228, 32.924
+-50.407, -45.862, 24
+-49.983, -46.462, 0
+-49.983, -46.462, 0
+-38.449, -62.801, 0
 endData
 127
-50
+64
 200
--67.136, -64.262, -63.9, -62.644, -63.9, -62.644, -60.663, -61.026
-#PATH.JERRYIO-DATA {"appVersion":"0.8.3","format":"LemLib v0.5","gc":{"robotWidth":12,"robotHeight":12,"robotIsHolonomic":false,"showRobot":false,"uol":2.54,"pointDensity":2,"controlMagnetDistance":1.968503937007874,"fieldImage":{"displayName":"V5RC 2025 - High Stakes (Skills)","signature":"V5RC 2025 - High Stakes (Skills)","origin":{"__type":"built-in"}},"coordinateSystem":"VEX Gaming Positioning System"},"paths":[{"segments":[{"controls":[{"uid":"QqH4TID2Nw","x":-67.13591272486411,"y":-64.26198819248467,"lock":false,"visible":true,"heading":60,"__type":"end-point"},{"uid":"c2exhGoNOn","x":-60.663109724009495,"y":-61.02558669205736,"lock":false,"visible":true,"heading":60,"__type":"end-point"}],"speedProfiles":[],"lookaheadKeyframes":[],"uid":"xHu4Ao3cvD"}],"pc":{"speedLimit":{"minLimit":{"value":0,"label":"0"},"maxLimit":{"value":127,"label":"127"},"step":1,"from":14,"to":50},"bentRateApplicableRange":{"minLimit":{"value":0,"label":"0"},"maxLimit":{"value":1,"label":"1"},"step":0.001,"from":0,"to":0.1},"maxDecelerationRate":127},"name":"Path","uid":"raTjTM3hEc","lock":false,"visible":true}]}
+-53.867, -40.96, -51.925, -43.711, -51.925, -43.711, -49.983, -46.462
+#PATH.JERRYIO-DATA {"appVersion":"0.8.3","format":"LemLib v0.5","gc":{"robotWidth":12,"robotHeight":12,"robotIsHolonomic":false,"showRobot":false,"uol":2.54,"pointDensity":2,"controlMagnetDistance":1.968503937007874,"fieldImage":{"displayName":"V5RC 2025 - High Stakes (Skills)","signature":"V5RC 2025 - High Stakes (Skills)","origin":{"__type":"built-in"}},"coordinateSystem":"VEX Gaming Positioning System"},"paths":[{"segments":[{"controls":[{"uid":"WqmQLhckjs","x":-53.86666657311215,"y":-40.959897389408034,"lock":false,"visible":true,"heading":150,"__type":"end-point"},{"uid":"Q84CYLLMH0","x":-49.98298477259937,"y":-46.46177994013446,"lock":false,"visible":true,"heading":150,"__type":"end-point"}],"speedProfiles":[{"uid":"EurUtkiZHh","xPos":0.5384615384615384,"yPos":0.27414233249488695,"followBentRate":true},{"uid":"sQqar0vNPa","xPos":0.9375,"yPos":0.08926527573763055,"followBentRate":true}],"lookaheadKeyframes":[],"uid":"yHhD9hTCC7"}],"pc":{"speedLimit":{"minLimit":{"value":0,"label":"0"},"maxLimit":{"value":127,"label":"127"},"step":1,"from":24,"to":64},"bentRateApplicableRange":{"minLimit":{"value":0,"label":"0"},"maxLimit":{"value":1,"label":"1"},"step":0.001,"from":0,"to":0.1},"maxDecelerationRate":127},"name":"Path","uid":"I5d7pyq07u","lock":false,"visible":true}]}
