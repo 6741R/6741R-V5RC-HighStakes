@@ -49,9 +49,9 @@ Robot_Config::Robot_Config() :
     vertical_encoder(1, true),
 
 // horizontal tracking wheel
-horizontal_tracking_wheel(&horizontal_encoder, 1.996, 1.55),
+horizontal_tracking_wheel(&horizontal_encoder, 1.996, 1.125),
 // vertical tracking wheel
-vertical_tracking_wheel(&vertical_encoder, 1.996, 0.88),
+vertical_tracking_wheel(&vertical_encoder, 1.996, 1.5),
 
 // odometry settings
 sensors(&vertical_tracking_wheel, // vertical tracking wheel 1, set to null
@@ -65,7 +65,15 @@ sensors(&vertical_tracking_wheel, // vertical tracking wheel 1, set to null
     // Chassis initialization without odometry
 
     // PID CONSTRUCTORS
-    lateralController(6, 0.1, 0.5, 3, 1, 100, 3, 500, 20),
+    lateralController(5.4, 
+                      0, 
+                      3, 
+                      3, 
+                      1, 
+                      100, 
+                      3, 
+                      500, 
+                      20),
     angularController(0.95, // proportional gain (kP)
                                               0, // integral gain (kI)
                                               0.2, // derivative gain (kD)
