@@ -56,13 +56,15 @@ const double kI = 0;     // Integral constant
 const double kD = 0;     // Derivative constant
 
 // Target position in ticks
-const double targetPosition = 33400.0;
+const double targetPosition = 33100.0;
 
 // Maximum and minimum motor power limits
 const double maxPower = 100.0;
 const double minPower = -100.0;
 void prepArm(void *param)
 {
+            double currentPosition = robotDevices.liftRotation.get_position();
+
 
     // Set brake modes
     c::motor_set_brake_mode(17, E_MOTOR_BRAKE_HOLD);
@@ -78,10 +80,10 @@ void prepArm(void *param)
     {
 
         // Current position of the arm
-        double currentPosition = robotDevices.liftRotation.get_position();
+         currentPosition = robotDevices.liftRotation.get_position();
         if (currentPosition < 10000.0)
         {
-            robotDevices.liftRotation.set_position(35800.0);
+            robotDevices.liftRotation.set_position(35600.0);
         }
         master.print(0, 0, "Pos: %.2f", currentPosition); // Calculate PID components
         error = targetPosition - currentPosition;         // Proportional term
@@ -1011,12 +1013,14 @@ delay(200);
         delay(400);
         c::motor_move(18, 0);
         // Align with goal
-        robotDevices.chassis.moveToPoint(0, 3.75, 4000, {.forwards = true, .maxSpeed = 127, .minSpeed = 60});
+        robotDevices.chassis.moveToPoint(0, 4.1, 900, {.forwards = true, .maxSpeed = 127, .minSpeed = 90});
         robotDevices.chassis.waitUntilDone();
         // Face goal
-        robotDevices.chassis.turnToHeading(-90, 700);
+        robotDevices.chassis.turnToHeading(-88, 700);
+        robotDevices.chassis.waitUntilDone();
+
         // Grab goal
-        robotDevices.chassis.moveToPoint(13, 5.25, 4000, {.forwards = false, .maxSpeed = 80, .minSpeed = 30});
+        robotDevices.chassis.moveToPoint(11, 5.65, 4000, {.forwards = false, .maxSpeed = 90, .minSpeed = 60});
         robotDevices.chassis.waitUntilDone();
         robotDevices.mogoClampPiston.set_value(false);
         delay(250);
@@ -1026,37 +1030,41 @@ delay(200);
         c::motor_move(5, -127);
         c::motor_move(18, -127);
         // Intake first ring
-        robotDevices.chassis.moveToPoint(13, 26.5, 4000, {.forwards = true, .maxSpeed = 127, .minSpeed = 60});
+        robotDevices.chassis.moveToPoint(13.75, 24.5, 4000, {.forwards = true, .maxSpeed = 127, .minSpeed = 60});
         robotDevices.chassis.waitUntilDone();
         delay(250);
+
+        
         // FAce second ring
-        robotDevices.chassis.turnToHeading(87, 700);
+        robotDevices.chassis.turnToHeading(86, 700);
         robotDevices.chassis.waitUntilDone();
         //Intake second ring
-        robotDevices.chassis.moveToPoint(31.2, 32, 4000, {.forwards = true, .maxSpeed = 127, .minSpeed = 60});
+        robotDevices.chassis.moveToPoint(31, 33, 4000, {.forwards = true, .maxSpeed = 127, .minSpeed = 60});
         robotDevices.chassis.waitUntilDone();
         delay(250);
         // Face far ring
-        robotDevices.chassis.turnToHeading(4, 700);
+        robotDevices.chassis.turnToHeading(2, 700);
         robotDevices.chassis.waitUntilDone();
+        
         // Intake far ring
-        robotDevices.chassis.moveToPoint(37.25, 70, 4000, {.forwards = true, .maxSpeed = 90, .minSpeed = 60});
+        robotDevices.chassis.moveToPoint(36.5, 74, 4000, {.forwards = true, .maxSpeed = 100, .minSpeed = 60});
         robotDevices.chassis.waitUntilDone();
-        delay(700);
-        // Back up
-        robotDevices.chassis.moveToPoint(30.75, 67.5, 4000, {.forwards = false, .maxSpeed = 110, .minSpeed = 60}); // TUNE THIS FOR WALL STAKE 1
-        robotDevices.liftRotation.set_position(35600.0);
+        delay(600);
+               // robotDevices.liftRotation.set_position(35500.0);
 
-        startPrepArmTask();
+                startPrepArmTask();
+
+        // Back up
+        robotDevices.chassis.moveToPoint(31, 58.35, 4000, {.forwards = false, .maxSpeed = 75, .minSpeed = 15}); // TUNE THIS FOR WALL STAKE 1
+
         robotDevices.chassis.waitUntilDone();
         
         // Face wall stake
         robotDevices.chassis.turnToHeading(88, 700);
         robotDevices.chassis.waitUntilDone();
-        delay(100);
         
         // Intake ring, score on wall stake
-        robotDevices.chassis.moveToPoint(44.5, 67.225, 4000, {.forwards = true, .maxSpeed = 40, .minSpeed = 25});
+        robotDevices.chassis.moveToPoint(48.9, 58.45, 1000, {.forwards = true, .maxSpeed = 45, .minSpeed = 10});
         robotDevices.chassis.waitUntilDone();
         delay(600);
         
@@ -1068,16 +1076,16 @@ delay(200);
         c::motor_move(17, 0);
         
         // Reverse from wall stake
-        robotDevices.chassis.moveToPoint(35.95, 67.5, 4000, {.forwards = false, .maxSpeed = 60, .minSpeed = 25});
+        robotDevices.chassis.moveToPoint(35.3, 63.35, 4000, {.forwards = false, .maxSpeed = 60, .minSpeed = 25});
         robotDevices.chassis.waitUntilDone();
 
         // Face 3 rings
         robotDevices.chassis.turnToHeading(176, 700);
         robotDevices.chassis.waitUntilDone();
-        c::motor_move(17, 90);
+        c::motor_move(17, 60);
 
         // Drive to 3 rings at high speed
-        robotDevices.chassis.moveToPoint(36.75, 40, 4000, {.forwards = true, .maxSpeed = 127, .minSpeed = 80});
+        robotDevices.chassis.moveToPoint(35.3, 40, 4000, {.forwards = true, .maxSpeed = 110, .minSpeed = 80});
         robotDevices.chassis.waitUntilDone();
         
         c::motor_move(17, 0);
@@ -1085,17 +1093,17 @@ delay(200);
         c::motor_move(18, -127);
 
         // Slow down and intake 2 rings
-        robotDevices.chassis.moveToPoint(36, 15.5, 4000, {.forwards = true, .maxSpeed = 40, .minSpeed = 25});
+        robotDevices.chassis.moveToPoint(34.25, 6.5, 4000, {.forwards = true, .maxSpeed = 60, .minSpeed = 25});
         robotDevices.chassis.waitUntilDone();
 
         // Face 3rd ring
-        robotDevices.chassis.turnToHeading(65, 700);
-        obotDevices.chassis.waitUntilDone();
+        robotDevices.chassis.turnToHeading(70, 700);
+        robotDevices.chassis.waitUntilDone();
 
         // Intake 3rd ring
-        robotDevices.chassis.moveToPoint(44, 20, 4000, {.forwards = true, .maxSpeed = 40, .minSpeed = 25});
+        robotDevices.chassis.moveToPoint(41.85, 14, 4000, {.forwards = true, .maxSpeed = 70, .minSpeed = 25});
         robotDevices.chassis.waitUntilDone();
-        delay(250);
+        delay(150);
 
         // Angle goal towards corner
         robotDevices.chassis.turnToHeading(-27, 700);
@@ -1104,24 +1112,24 @@ delay(200);
         c::motor_move(18, 25);
 
         // Place goal in corner and let go
-        robotDevices.chassis.moveToPoint(49, 13, 4000, {.forwards = false, .maxSpeed = 50, .minSpeed = 35});
+        robotDevices.chassis.moveToPoint(43.5, 7, 600, {.forwards = false, .maxSpeed = 60, .minSpeed = 50});
         robotDevices.chassis.waitUntilDone();
 
         robotDevices.mogoClampPiston.set_value(true);
         delay(200);
         
         // Drive away from corner
-        robotDevices.chassis.moveToPoint(46, 14, 4000, {.forwards = true, .maxSpeed = 75, .minSpeed = 40});
+        robotDevices.chassis.moveToPoint(42, 9.75, 800, {.forwards = true, .maxSpeed = 75, .minSpeed = 50});
         robotDevices.chassis.waitUntilDone();
 
         // Face second goal
-        robotDevices.chassis.turnToHeading(87, 700);
+        robotDevices.chassis.turnToHeading(87, 600);
         robotDevices.chassis.waitUntilDone();
 
         // Approach second goal and clamp
-        robotDevices.chassis.moveToPoint(-16, 15.25, 4000, {.forwards = false, .maxSpeed = 100, .minSpeed = 40});
+        robotDevices.chassis.moveToPoint(-16, 10, 4000, {.forwards = false, .maxSpeed = 100, .minSpeed = 40});
         robotDevices.chassis.waitUntilDone();
-        robotDevices.chassis.moveToPoint(-30.3, 16.45, 4000, {.forwards = false, .maxSpeed = 70, .minSpeed = 15});
+        robotDevices.chassis.moveToPoint(-33, 10, 4000, {.forwards = false, .maxSpeed = 70, .minSpeed = 15});
         robotDevices.chassis.waitUntilDone();
         robotDevices.mogoClampPiston.set_value(false);
         delay(250);
@@ -1134,50 +1142,169 @@ delay(200);
         c::motor_move(18, -127);
 
         // Intake first ring
-        robotDevices.chassis.moveToPoint(-29, 36, 4000, {.forwards = true, .maxSpeed = 75, .minSpeed = 15});
+        robotDevices.chassis.moveToPoint(-32.5, 33, 4000, {.forwards = true, .maxSpeed = 75, .minSpeed = 15});
         robotDevices.chassis.waitUntilDone();
         
         // Face ring under ladder
-        robotDevices.chassis.turnToHeading(45, 700);                       
+        robotDevices.chassis.turnToHeading(51, 700);                       
         robotDevices.chassis.waitUntilDone();
 
         // Intake ladder ring
-        robotDevices.chassis.moveToPoint(-8, 61, 4000, {.forwards = true, .maxSpeed = 75, .minSpeed = 15});
+        robotDevices.chassis.moveToPoint(-9, 59.75, 4000, {.forwards = true, .maxSpeed = 75, .minSpeed = 15});
         robotDevices.chassis.waitUntilDone();
-        delay(400);
-
+        delay(500);
+        c::motor_move(5, 30);
+        c::motor_move(18, 30);
         // Back out of ladder
-        robotDevices.chassis.moveToPoint(-28, 36, 4000, {.forwards = false, .maxSpeed = 75, .minSpeed = 15});
+        robotDevices.chassis.moveToPoint(-33, 33, 4000, {.forwards = false, .maxSpeed = 75, .minSpeed = 15});
         robotDevices.chassis.waitUntilDone();
+        c::motor_move(5,  -127);
+        c::motor_move(18, -127);
 
+        
         // Face wall stake ring and approach
         robotDevices.chassis.turnToHeading(-45, 700);                        
         robotDevices.chassis.waitUntilDone();
-        robotDevices.chassis.moveToPoint(-46, 60, 4000, {.forwards = true, .maxSpeed = 75, .minSpeed = 15});
+               // robotDevices.liftRotation.set_position(35600.0);
+
+                startPrepArmTask();
+
+        robotDevices.chassis.moveToPoint(-49, 56.5, 4000, {.forwards = true, .maxSpeed = 75, .minSpeed = 15});
         robotDevices.chassis.waitUntilDone();
-        robotDevices.liftRotation.set_position(35600.0);
-        startPrepArmTask();
 
         // Face wall stake, intake ring and score
         robotDevices.chassis.turnToHeading(-93, 700);  
         robotDevices.chassis.waitUntilDone();
         delay(100);
 
-        robotDevices.chassis.moveToPoint(-61, 63.6, 4000, {.forwards = true, .maxSpeed = 40, .minSpeed = 15});
+        robotDevices.chassis.moveToPoint(-72, 56.5, 1500, {.forwards = true, .maxSpeed = 45, .minSpeed = 30});
         robotDevices.chassis.waitUntilDone();
-        delay(400);
+        delay(500);
         c::motor_move(5, 15);
         c::motor_move(18, 15);
         stopPrepArmTask();
         c::motor_move(17, -127);
-        delay(400);
+        delay(500);
         c::motor_move(17, 0);
+        robotDevices.chassis.moveToPoint(-54.25, 59, 4000, {.forwards = false, .maxSpeed = 40, .minSpeed = 15});
+        robotDevices.chassis.waitUntilDone();
+        robotDevices.chassis.turnToHeading(-177, 700);  
+                robotDevices.chassis.waitUntilDone();
+                        c::motor_move(17, 45);
+
+        c::motor_move(5, -127);
+        c::motor_move(18, -127);
+        robotDevices.chassis.moveToPoint(-54.25, 4, 4000, {.forwards = true, .maxSpeed = 63, .minSpeed = 35});
+                        robotDevices.chassis.waitUntilDone();
+                        delay(150);
+                        c::motor_move(17, 0);
+                robotDevices.chassis.waitUntilDone();
+        robotDevices.chassis.turnToHeading(-55, 700);  
+        robotDevices.chassis.moveToPoint(-63, 9.5, 4000, {.forwards = true, .maxSpeed = 60, .minSpeed = 15});
+                        robotDevices.chassis.waitUntilDone();
+
+
+        robotDevices.chassis.turnToHeading(25, 700);  
+                        robotDevices.chassis.waitUntilDone();
+
+        robotDevices.chassis.moveToPoint(-65, 2, 4000, {.forwards = false, .maxSpeed = 60, .minSpeed = 15});
+                        robotDevices.chassis.waitUntilDone();
+   c::motor_move(5, 127);
+        c::motor_move(18, 127);
+        robotDevices.mogoClampPiston.set_value(true);
+
+        robotDevices.chassis.turnToHeading(63.5, 1000);  
+                                robotDevices.chassis.waitUntilDone();
+   c::motor_move(5, -60);
+        c::motor_move(18, -127);
+        
+        robotDevices.chassis.moveToPoint(17, 77.9, 2450, {.forwards = true, .maxSpeed = 110, .minSpeed = 15});
+                        robotDevices.chassis.waitUntilDone();
+//delay(50);
+        //delay(250);
+           c::motor_move(5, 0);
+        c::motor_move(18, 0);
+                startPrepArmTask();
+
+        
+        robotDevices.chassis.turnToHeading(130, 1000);  
+
+        
+                                robotDevices.chassis.waitUntilDone();
+                                
+                                        robotDevices.chassis.moveToPoint(-13, 100, 2500, {.forwards = false, .maxSpeed = 60, .minSpeed = 15});
+        c::motor_move(5, -127);
+        c::motor_move(18, -127);
+                                robotDevices.chassis.waitUntilDone();
+                                delay(100);
+        robotDevices.mogoClampPiston.set_value(false);
+        
+
+        
+                robotDevices.chassis.turnToHeading(14, 1000);  
+                
+        //robotDevices.chassis.moveToPoint(-12.5, 109, 4000, {.forwards = true, .maxSpeed = 40, .minSpeed = 15});
+                                robotDevices.chassis.waitUntilDone();                                      
+                          robotDevices.chassis.moveToPoint(-14, 102.7, 2500, {.forwards = true, .maxSpeed = 60, .minSpeed = 15});
+                                      //  robotDevices.chassis.moveToPoint(-12, 102, 2500, {.forwards = false, .maxSpeed = 60, .minSpeed = 15});
+                                robotDevices.chassis.waitUntilDone();                                      
+
+
+                                
+        c::motor_move(5, 15);
+        c::motor_move(18, 15);
+        stopPrepArmTask();
+        c::motor_move(17, -127);
+        delay(650);
+        c::motor_move(17, 0);
+        
+                                                    robotDevices.chassis.waitUntilDone();
+        robotDevices.chassis.moveToPoint(-13.8, 96.6, 5000, {.forwards = false, .maxSpeed = 100, .minSpeed = 60});
+                                                    robotDevices.chassis.waitUntilDone();
+
+                        c::motor_move(17, 80);
+                robotDevices.chassis.turnToHeading(-120, 1000);  
+                                            robotDevices.chassis.waitUntilDone();
+                        c::motor_move(17, 0);
+        c::motor_move(5, -127);
+        c::motor_move(18, -127);
+                        
+        robotDevices.chassis.moveToPoint(-28, 82, 5000, {.forwards = true, .maxSpeed = 100, .minSpeed = 60});
+                                            robotDevices.chassis.waitUntilDone();
+                                                            robotDevices.chassis.turnToHeading(-90, 1000);  
+                                            robotDevices.chassis.waitUntilDone();
+        robotDevices.chassis.moveToPoint(-64, 79, 5000, {.forwards = true, .maxSpeed = 80, .minSpeed = 60});
+                                            robotDevices.chassis.waitUntilDone();
+                                            delay(200);
+                                                            robotDevices.chassis.turnToHeading(-3, 1000);  
+                                                                                                        robotDevices.chassis.waitUntilDone();
+
+                                                                    robotDevices.chassis.moveToPoint(-72.5, 95, 5000, {.forwards = true, .maxSpeed = 100, .minSpeed = 60});
+                                            robotDevices.chassis.waitUntilDone();   
+                                                robotDevices.chassis.moveToPoint(-71, 88, 5000, {.forwards = false, .maxSpeed = 100, .minSpeed = 60});
+                                               robotDevices.chassis.waitUntilDone();   
+                                                            robotDevices.chassis.turnToHeading(45, 1000);                                                 robotDevices.chassis.waitUntilDone();   
+                                               robotDevices.chassis.waitUntilDone();   
+  robotDevices.chassis.moveToPoint(-58, 92, 5000, {.forwards = true, .maxSpeed = 100, .minSpeed = 60});
+                                                 robotDevices.chassis.waitUntilDone();   
+
+                                                            robotDevices.chassis.turnToHeading(88, 1000);  
+                                                                       robotDevices.chassis.waitUntilDone();   
+  //robotDevices.chassis.moveToPoint(6, 96, 5000, {.forwards = true, .maxSpeed = 100, .minSpeed = 60});
+
+
+                                                                    //  robotDevices.chassis.turnToHeading(90, 1000);  
+
+
+
+/*
+                       // robotDevices.chassis.moveToPoint(-12, 98, 4000, {.forwards = false, .maxSpeed = 100, .minSpeed = 60});
 
 
 
         //robotDevices.chassis.moveToPoint(4 13, 4000, {.forwards = false, .maxSpeed = 50, .minSpeed = 35});
 
-
+*/
 
         delay(3000);
                 robotDevices.frontLeftMotor.set_brake_mode(E_MOTOR_BRAKE_COAST);
