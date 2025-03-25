@@ -21,22 +21,25 @@ In addition to qualifying for our State Championship tournament in Ohio, and the
 │
 ├── 📁 include
 │   ├── Autonomous_Manager.h
-│   ├── BrainUI.h
+│   ├── Brain_UI.h
 │   ├── Intake_Control.h
-│   ├── Lift_Control.h
+│   ├── Arm_Control.h
 │   ├── Mogo_Clamp.h
+│   ├── Robot_Config.h
 │   └── Robot.h
 │
 ├── 📁 src
+│   ├── Arm_Control.cpp
 │   ├── Autonomous_Manager.cpp
 │   ├── BrainUI.cpp
 │   ├── Intake_Control.cpp
-│   ├── Lift_Control.cpp
 │   ├── Mogo_Clamp.cpp
+│   ├── Robot_Config.cpp
 │   ├── Robot.cpp
 │   └── main.cpp
 │
 ├── 📁 assets
+│   ├── Logo_Image.h
 │   └── HighStakesFieldImage.h
 │
 └── 📁 build
@@ -45,6 +48,6 @@ In addition to qualifying for our State Championship tournament in Ohio, and the
 
 ## Contact Us
 
-If you have any questions or concerns feel free to reach out:
+If you have any questions or concerns feel free to reach out to our lead developer:
 
 - Email: nindriod7@gmail.com
