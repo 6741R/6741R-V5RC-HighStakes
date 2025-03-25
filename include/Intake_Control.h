@@ -38,22 +38,7 @@ class Intake_Control {
          */
         void StopIntake();
 
-        /**
-         * @brief Checks and manages the possession of illegal rings.
-         *
-         * This method examines the intake system to ensure no more than two rings are present,
-         * and outtakes any excess rings.
-         */
-        void CheckPossession();
 
-        /**
-         * @brief Retrieves the current status of the intake mechanism.
-         * @return True if the intake is rotating, false otherwise.
-         *
-         * This method checks the actual velocity of the intake motor to determine if the intake
-         * mechanism is actively moving.
-         */
-        bool GetIntakingStatus();
 };
 
 #endif

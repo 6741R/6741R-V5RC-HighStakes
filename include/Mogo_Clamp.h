@@ -26,13 +26,6 @@ class Mogo_Clamp {
          */
         void Unclamp();
 
-        /**
-         * @brief Checks if the clamp is currently engaged.
-         * 
-         * @return True if the clamp is engaged, false otherwise.
-         */
-        bool GetIsClamped() const;
-
     private:
         bool isClamped; ///< Indicates whether the clamp is currently engaged.
 };

@@ -3,10 +3,10 @@
 #define ROBOT_H
 
 // Include all subsystem headers
-#include "Lift_Control.h"
+#include "Arm_Control.h"
 #include "Mogo_Clamp.h"
 #include "Intake_Control.h"
-#include "Ring_Stopper.h"
+#include "Doinker.h"
 
 /**
  * @class Robot
@@ -36,10 +36,10 @@ class Robot {
         void initialize();
 
         // Subsystem instances
-        Lift_Control lift;      ///< Controls the lift mechanism.
+        Arm_Control lift;      ///< Controls the lift mechanism.
         Mogo_Clamp mogoClamp;   ///< Controls the mobile goal clamp.
         Intake_Control intake;  ///< Controls the intake mechanism.
-        Ring_Stopper ringStopper; ///< Controls the ring stopping mechanism.
+        Doinker doinker; ///< Controls the ring stopping mechanism.
 };
 
 #endif

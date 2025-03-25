@@ -1,4 +1,4 @@
-bin/Lift_Control.cpp.o: src/Lift_Control.cpp include/Robot_Config.h \
+bin/Arm_Control.cpp.o: src/Arm_Control.cpp include/Robot_Config.h \
  include/lemlib/api.hpp include/lemlib/pid.hpp include/lemlib/pose.hpp \
  include/lemlib/util.hpp include/lemlib/chassis/chassis.hpp \
  include/pros/rtos.hpp include/pros/rtos.h include/pros/motors.hpp \
@@ -12,7 +12,8 @@ bin/Lift_Control.cpp.o: src/Lift_Control.cpp include/Robot_Config.h \
  include/fmt/args.h include/lemlib/logger/message.hpp \
  include/lemlib/logger/infoSink.hpp \
  include/lemlib/logger/telemetrySink.hpp include/pros/optical.hpp \
- include/pros/optical.h include/pros/error.h include/Lift_Control.h
+ include/pros/optical.h include/pros/error.h include/Arm_Control.h \
+ include/pros/rtos.hpp
 include/Robot_Config.h:
 include/lemlib/api.hpp:
 include/lemlib/pid.hpp:
@@ -46,4 +47,5 @@ include/lemlib/logger/telemetrySink.hpp:
 include/pros/optical.hpp:
 include/pros/optical.h:
 include/pros/error.h:
-include/Lift_Control.h:
+include/Arm_Control.h:
+include/pros/rtos.hpp:

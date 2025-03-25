@@ -1,4 +1,4 @@
-bin/Ring_Stopper.cpp.o: src/Ring_Stopper.cpp include/Robot_Config.h \
+bin/Doinker.cpp.o: src/Doinker.cpp include/Robot_Config.h \
  include/lemlib/api.hpp include/lemlib/pid.hpp include/lemlib/pose.hpp \
  include/lemlib/util.hpp include/lemlib/chassis/chassis.hpp \
  include/pros/rtos.hpp include/pros/rtos.h include/pros/motors.hpp \
@@ -12,7 +12,7 @@ bin/Ring_Stopper.cpp.o: src/Ring_Stopper.cpp include/Robot_Config.h \
  include/fmt/args.h include/lemlib/logger/message.hpp \
  include/lemlib/logger/infoSink.hpp \
  include/lemlib/logger/telemetrySink.hpp include/pros/optical.hpp \
- include/pros/optical.h include/pros/error.h include/Ring_Stopper.h
+ include/pros/optical.h include/pros/error.h include/Doinker.h
 include/Robot_Config.h:
 include/lemlib/api.hpp:
 include/lemlib/pid.hpp:
@@ -46,4 +46,4 @@ include/lemlib/logger/telemetrySink.hpp:
 include/pros/optical.hpp:
 include/pros/optical.h:
 include/pros/error.h:
-include/Ring_Stopper.h:
+include/Doinker.h:

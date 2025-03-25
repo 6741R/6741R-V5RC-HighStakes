@@ -11,38 +11,24 @@ class Robot_Config {
     public:
     
     // 3-WIRE DIGITAL OUT (PNEUMATICS)
-
-        // Mogo-clamp sensor
-        ADIDigitalOut mogoClampPiston;
-        ADIDigitalOut ringStopperPiston;
+        ADIDigitalOut mogoClampPiston1;
+        ADIDigitalOut mogoClampPiston2;
         ADIDigitalOut doinker;
-
-    // 3-WIRE IN (SENSORS)
-
-        // Nothing yet
 
     // V5 SENSORS
         Optical optical;
-
-        // Inertial sensors
         Imu imu;
-        Imu imu2;
+        Rotation armRotation;
 
     // SUBSYSTEM MOTORS
-
-        Motor liftMotor;
+        Motor armMotor1;
+        Motor armMotor2;
         Motor intakeMotor;
-        Motor intakeMotor2;
-        Rotation liftRotation;
 
     // DRIVETRAIN MOTORS
-
-        // Motors composing the left half of the Drivetrain
         Motor frontLeftMotor;
         Motor lowerLeftMotor;
         Motor upperLeftMotor;
-
-        // Motors composing the right half of the Drivetrain
         Motor frontRightMotor;
         Motor lowerRightMotor;
         Motor upperRightMotor;
@@ -51,25 +37,21 @@ class Robot_Config {
         MotorGroup leftMotors;
         MotorGroup rightMotors;
 
+    // ODOMETRY OBJECTS
         // Initialization of the Drivetrain object
         lemlib::Drivetrain drivetrain;
-// horizontal tracking wheel
-lemlib::TrackingWheel horizontal_tracking_wheel;
-// vertical tracking wheel
-lemlib::TrackingWheel vertical_tracking_wheel;
-// horizontal tracking wheel encoder
-pros::Rotation horizontal_encoder;
-// vertical tracking wheel encoder
-pros::Rotation vertical_encoder;
-// odometry settings
-lemlib::OdomSensors sensors;
-    // ENCODERS (in motors, read individually)
+
+        lemlib::TrackingWheel horizontal_tracking_wheel;
+        lemlib::TrackingWheel vertical_tracking_wheel;
+
+        pros::Rotation horizontal_encoder;
+        pros::Rotation vertical_encoder;
+
+        lemlib::OdomSensors sensors;
 
     // PID CONTROLLERS
-
         lemlib::ControllerSettings lateralController;
         lemlib::ControllerSettings angularController;
-        lemlib::ControllerSettings armPid;
         lemlib::Chassis chassis;
 
     Robot_Config();

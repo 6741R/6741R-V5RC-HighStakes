@@ -16,9 +16,8 @@ extern Robot_Config robotDevices;
  * @param velocityPercent The desired intake velocity in percent (0-100).
  */
 void Intake_Control::Intake(int velocityPercent) {
-
     // Rotates the intake motor forward at the desired speed.
-    c::motor_move(3, (1 / velocityPercent) * 127);
+    robotDevices.intakeMotor.move(-(1 / velocityPercent) * 127);
 }
 
 /**
@@ -31,9 +30,8 @@ void Intake_Control::Intake(int velocityPercent) {
  * @param velocityPercent The desired outtake velocity in percent (0-100).
  */
 void Intake_Control::Outtake(int velocityPercent) {
-
     // Rotates the intake motor in reverse at the desired speed.
-    c::motor_move(3, (1 / velocityPercent) * -127);
+    robotDevices.intakeMotor.move((1 / velocityPercent) * 127);
 }
 
 /**
@@ -43,32 +41,6 @@ void Intake_Control::Outtake(int velocityPercent) {
  * changes the brake mode to "coast," allowing the intake to spin freely when stopped.
  */
 void Intake_Control::StopIntake() {
-
     robotDevices.intakeMotor.set_brake_mode(E_MOTOR_BRAKE_COAST);
-    c::motor_move(3, 0);
-}
-
-/**
- * @brief Manages ring possession to ensure legal possession limits.
- * 
- * This function checks if the intake system has more than two rings. If it does,
- * the intake will reverse to outtake excess rings until only two remain. This function
- * is currently a placeholder and needs implementation.
- */
-void Intake_Control::CheckPossession() {
-
-    // Placeholder for checking ring count and outtaking excess rings.
-}
-
-/**
- * @brief Retrieves the current status of the intake system.
- * 
- * This function returns `true` if the intake motor is currently running (positive velocity),
- * indicating that the intake is active. It returns `false` otherwise.
- * 
- * @return `true` if the intake is running, `false` if it is stopped.
- */
-bool Intake_Control::GetIntakingStatus() { 
-    
-    return robotDevices.intakeMotor.get_actual_velocity() > 0;
+    robotDevices.intakeMotor.move(0);
 }
