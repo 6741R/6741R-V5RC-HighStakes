@@ -15,6 +15,10 @@ class Arm_Control {
 public:
     static void StopArm();
     static int GetPosition();
+    static void Lower();
+    static void Raise();
+
+
 
     // Task management
     static void StartArmPID(int target);

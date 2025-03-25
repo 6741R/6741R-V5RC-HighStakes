@@ -22,6 +22,16 @@ void Arm_Control::StopArm() {
     robotDevices.armMotor2.move(0);
 }
 
+void Arm_Control::Raise() {
+    robotDevices.armMotor1.move(127);
+    robotDevices.armMotor2.move(-127);
+}
+
+void Arm_Control::Lower() {
+    robotDevices.armMotor1.move(-127);
+    robotDevices.armMotor2.move(127);
+}
+
 int Arm_Control::GetPosition() {
     return robotDevices.armRotation.get_position();
 }

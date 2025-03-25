@@ -157,17 +157,17 @@ void ArmDriverControl() {
     // Check if the Y button is pressed.
     // If pressed, raise arm
     if (master.get_digital(E_CONTROLLER_DIGITAL_Y)) {
-
+        robot.lift.Raise();
     }
     // Check if the Right button is pressed.
     // If pressed, lower arm
     else if (master.get_digital(E_CONTROLLER_DIGITAL_RIGHT)) {
-
+        robot.lift.Lower();
     }
     // If neither L2 nor L1 is pressed.
     // Stop the arm to hold it in its current position.
     else {
-
+        robot.lift.StopArm();
     }
 }
 
@@ -183,12 +183,12 @@ void IntakeDriverControl() {
     // Check if the R1 button is pressed.
     // If pressed, spin intake forward with full power (100%)
     if (master.get_digital(E_CONTROLLER_DIGITAL_R1)) {
-        robot.intake.Intake(100);
+        robot.intake.Intake(127);
     }
     // Check if the R2 button is pressed.
     // If pressed, spin intake backward with full power (100%)
     else if (master.get_digital(E_CONTROLLER_DIGITAL_R2)) {
-        robot.intake.Intake(100);
+        robot.intake.Intake(127);
 
     }
     // If neither R1 nor R2 is pressed.
