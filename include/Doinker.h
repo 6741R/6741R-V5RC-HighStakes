@@ -25,6 +25,15 @@ class Doinker {
          * @brief Releases the clamp to let go of the mobile goal.
          */
         void Raise();
+                /**
+         * @brief Engages the clamp to hold the mobile goal.
+         */
+         void Lower2();
+
+         /**
+          * @brief Releases the clamp to let go of the mobile goal.
+          */
+         void Raise2();
 
     private:
         bool isLowered; ///< Indicates whether the clamp is currently engaged.

@@ -35,3 +35,27 @@ void Doinker::Raise() {
     robotDevices.doinker.set_value(false);
     isLowered = false;
 }
+
+/**
+ * @brief Engages the mobile goal (mogo) clamp.
+ * 
+ * This function activates the pneumatic piston responsible for clamping the 
+ * mobile goal by setting its value to `true`. The `isClamped` state is then 
+ * updated to reflect that the clamp is engaged.
+ */
+ void Doinker::Lower2() {
+    robotDevices.mogoClampPiston2.set_value(false);
+    isLowered = true;
+}
+
+/**
+ * @brief Releases the mobile goal (mogo) clamp.
+ * 
+ * This function deactivates the pneumatic piston by setting its value to `false`, 
+ * releasing the mobile goal. The `isClamped` state is then updated to reflect that 
+ * the clamp is disengaged.
+ */
+void Doinker::Raise2() {
+    robotDevices.mogoClampPiston2.set_value(true);
+    isLowered = false;
+}

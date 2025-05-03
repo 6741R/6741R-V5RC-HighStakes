@@ -20,8 +20,8 @@ Mogo_Clamp::Mogo_Clamp() : isClamped(false) {}
  * updated to reflect that the clamp is engaged.
  */
 void Mogo_Clamp::Clamp() {
-    robotDevices.mogoClampPiston1.set_value(true);
-    robotDevices.mogoClampPiston2.set_value(true);
+    robotDevices.mogoClampPiston1.set_value(false);
+    //robotDevices.mogoClampPiston2.set_value(true);
     isClamped = true;
 }
 
@@ -33,7 +33,7 @@ void Mogo_Clamp::Clamp() {
  * the clamp is disengaged.
  */
 void Mogo_Clamp::Unclamp() {
-    robotDevices.mogoClampPiston1.set_value(false);
-    robotDevices.mogoClampPiston2.set_value(true);
+    robotDevices.mogoClampPiston1.set_value(true);
+    //robotDevices.mogoClampPiston2.set_value(true);
     isClamped = false;
 }

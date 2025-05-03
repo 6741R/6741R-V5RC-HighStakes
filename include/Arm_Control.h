@@ -17,7 +17,8 @@ public:
     static int GetPosition();
     static void Lower();
     static void Raise();
-
+    static bool armPIDActive;
+    static bool IsArmPIDActive();
 
 
     // Task management

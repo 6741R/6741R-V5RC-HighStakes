@@ -12,32 +12,35 @@
  */
 class Intake_Control {
     public:
-
         /**
-         * @brief Intakes objects at a specified velocity.
+         * @brief Sets the desired intake velocity manually.
          * 
          * @param velocityPercent The desired velocity of the intake, expressed as a percentage.
-         *
-         * This method sets the intake motor to rotate forward at the specified speed.
          */
-        void Intake(int velocityPercent);
+        void setVelocity(int velocityPercent);
 
         /**
-         * @brief Outtakes objects at a specified velocity.
-         * 
-         * @param velocityPercent The desired velocity of the outtake, expressed as a percentage.
-         *
-         * This method sets the intake motor to rotate in reverse at the specified speed.
+         * @brief Starts the background task that manages color sorting.
          */
-        void Outtake(int velocityPercent);
+        void startTask();
+        void stopTask();
 
-        /**
-         * @brief Stops the intake mechanism.
-         *
-         * This method halts the intake motor and sets it to coast mode, stopping all movement.
-         */
-        void StopIntake();
+        void setColorSortEnabled(bool enabled);
+        bool isColorSortEnabled() const;
 
+        bool taskRunning = false;
+        bool redAlliance = false;
+
+    private:
+        int manualVelocity = 0; // Velocity set by the driver
+        bool ejecting = false;
+        bool ejectScheduled = false;
+        int ejectTimer = 0;
+        int ejectDelayTimer = 0;
+        bool colorSortEnabled = true;
+
+        void taskFn(); // The background task function
+        pros::Task* intakeTask = nullptr;
 
 };
 

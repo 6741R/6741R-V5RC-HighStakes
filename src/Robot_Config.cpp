@@ -18,38 +18,38 @@ Robot_Config::Robot_Config() :
         doinker(DIGITAL_SENSOR_PORT_C),
 
     // V5 SENSORS
-        optical(10),
-        imu(7),
+        optical(8),
+        imu(2),
         armRotation(20),
 
     // SUBSYSTEM MOTORS
-        armMotor1(17, E_MOTOR_GEAR_GREEN),
-        armMotor2(19, E_MOTOR_GEAR_GREEN ),
-        intakeMotor(18, E_MOTOR_GEAR_BLUE),
+        armMotor1(-11, E_MOTOR_GEAR_GREEN),
+        armMotor2(-12, E_MOTOR_GEAR_GREEN),
+        intakeMotor(13, E_MOTOR_GEAR_BLUE),
 
     // DRIVETRAIN MOTORS
-        frontLeftMotor(16, E_MOTOR_GEAR_BLUE),
-        lowerLeftMotor(-15, E_MOTOR_GEAR_BLUE),
-        upperLeftMotor(14, E_MOTOR_GEAR_BLUE),
-        frontRightMotor(-13, E_MOTOR_GEAR_BLUE),
-        lowerRightMotor(12, E_MOTOR_GEAR_BLUE),
-        upperRightMotor(-11, E_MOTOR_GEAR_BLUE),
+        frontLeftMotor(15, E_MOTOR_GEAR_BLUE),
+        lowerLeftMotor(-14, E_MOTOR_GEAR_BLUE),
+        upperLeftMotor(-20, E_MOTOR_GEAR_BLUE),
+        frontRightMotor(18, E_MOTOR_GEAR_BLUE),
+        lowerRightMotor(-17, E_MOTOR_GEAR_BLUE),
+        upperRightMotor(16, E_MOTOR_GEAR_BLUE),
 
     // Drivetrain motor groups
         leftMotors({frontLeftMotor, lowerLeftMotor, upperLeftMotor}),
         rightMotors({frontRightMotor, lowerRightMotor, upperRightMotor}),
 
     // Drivetrain initialization
-        drivetrain(&leftMotors, &rightMotors, 11.375, lemlib::Omniwheel::NEW_325, 450.75, 2),
+        drivetrain(&leftMotors, &rightMotors, 9.525, lemlib::Omniwheel::NEW_325, 450.75, 2),
     
     // Odometry objects
-        horizontal_encoder(6, false),
-        vertical_encoder(1, true),
+        horizontal_encoder(3, false),
+        vertical_encoder(4, true),
 
         // horizontal tracking wheel
-        horizontal_tracking_wheel(&horizontal_encoder, 1.996, 1.125),
+        horizontal_tracking_wheel(&horizontal_encoder, 1.996, -3.03125),
         // vertical tracking wheel
-        vertical_tracking_wheel(&vertical_encoder, 1.996, 1.5),
+        vertical_tracking_wheel(&vertical_encoder, 1.996, 0.5),
 
         // odometry settings
         sensors(&vertical_tracking_wheel, // vertical tracking wheel 1, set to null
@@ -60,18 +60,18 @@ Robot_Config::Robot_Config() :
         ),
    
         // PID CONSTRUCTORS
-        lateralController(5.4, 
+        lateralController(6.75, 
                             0, 
-                            3, 
+                            0, 
                             3, 
                             1, 
                             100, 
                             3, 
                             500, 
                             20),
-        angularController(0.95, // proportional gain (kP)
+        angularController(0.75, // proportional gain (kP)
                             0, // integral gain (kI)
-                            0.2, // derivative gain (kD)
+                            0.25, // derivative gain (kD)
                             3, // anti windup
                             1, // small error range, in inches
                             100, // small error range timeout, in milliseconds

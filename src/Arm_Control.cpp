@@ -8,12 +8,15 @@ pros::Task *Arm_Control::armTask = nullptr;
 int Arm_Control::armTargetPosition = 0;
 
 // PID Constants
-const double kP = 0.0;
+const double kP = 0.4
+;
 const double kI = 0.0;
 const double kD = 0.0;
-const double tolerance = 200.0;
+const double tolerance = 2.0;
 const double maxPower = 127.0;
 const double minPower = -127.0;
+
+
 
 void Arm_Control::StopArm() {
     robotDevices.armMotor1.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
@@ -33,9 +36,8 @@ void Arm_Control::Lower() {
 }
 
 int Arm_Control::GetPosition() {
-    return robotDevices.armRotation.get_position();
+    return robotDevices.armMotor1.get_position();
 }
-
 void Arm_Control::ArmPID(void *param) {
     robotDevices.armMotor1.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
     robotDevices.armMotor2.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
@@ -47,14 +49,16 @@ void Arm_Control::ArmPID(void *param) {
     while (true) {
         double currentPosition = GetPosition();
         
-        // Emergency reset position condition
-        if (currentPosition < 10000.0) {
-            robotDevices.armRotation.set_position(35800.0);
-        }
-
         error = armTargetPosition - currentPosition;
         integral += error;
         derivative = error - lastError;
+
+        // Prevent integral wind-up
+        if (fabs(error) < 50) {
+            integral += error;
+        } else {
+            integral = 0;
+        }
 
         motorPower = (kP * error) + (kI * integral) + (kD * derivative);
         motorPower = std::clamp(motorPower, minPower, maxPower);
@@ -62,23 +66,21 @@ void Arm_Control::ArmPID(void *param) {
         robotDevices.armMotor1.move(motorPower);
         robotDevices.armMotor2.move(-motorPower);
 
-        if (fabs(error) <= tolerance) {
-            break;
-        }
-
         lastError = error;
         pros::delay(10);
     }
-
-    robotDevices.armMotor1.move(0);
-    robotDevices.armMotor2.move(0);
-
 }
 
+bool Arm_Control::armPIDActive = false;
+
+bool Arm_Control::IsArmPIDActive() {
+    return armPIDActive;
+}
 
 void Arm_Control::StartArmPID(int target) {
     if (armTask == nullptr) {
         armTargetPosition = target;
+        armPIDActive = true;
         armTask = new pros::Task(ArmPID, nullptr, "Arm PID Task");
     }
 }
@@ -88,5 +90,6 @@ void Arm_Control::StopArmPID() {
         armTask->remove();
         delete armTask;
         armTask = nullptr;
+        armPIDActive = false;
     }
 }
